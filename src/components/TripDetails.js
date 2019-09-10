@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { activeTripDetails} from '../store/actions';
 import { bindActionCreators } from 'redux';
 
-class InterDetails extends Component {
+class TripDetails extends Component {
 
   constructor(props){
     super(props);
@@ -21,17 +21,51 @@ class InterDetails extends Component {
      destination: '',
      pickup_time:'',
      pickup_date:'',
+     trip_id:'',
        }
      }
 
      componentDidMount () {
        const { navigation } = this.props;
        const tripId = navigation.getParam('tripId', 'NO-ID');
+       this.state.trip_id = tripId;
        console.log('TRIP ID: '+ tripId);
+       console.log('TRIP ID: '+ this.state.trip_id);
         this.props.activeTripDetails(tripId);
     // console.log('');
      }
-     static navigationOptions = { header: null, }
+     
+
+     cancelTrip = () => {
+      let data={}
+        data.trip_id = this.state.trip_id
+
+        console.log('CANCEL TRIP DATA: '+ data.trip_id)
+
+      var url = 'http://104.248.254.71/app/public/api/cancel-trip-request';
+    
+      fetch(url, {
+      method: 'POST', // or 'PUT'
+      body: JSON.stringify(data), // data can be `string` or {object}!
+      headers:{
+        'Content-Type': 'application/json'
+      }
+      }).then(res => res.json())
+      .then(response => {
+        console.log(response.message);
+        console.log(response.trip_details.id)
+         this.props.navigation.navigate('PostTrip');
+          if(response.status == true){
+            // this.props.navigation.navigate('InterDetails');
+          }else{
+            console.log(response.status);
+              console.log(response);
+          }
+      })
+      .catch(error => console.error('Error', error));
+      }
+
+      static navigationOptions = { header: null, }
 
   render() {
     return (
@@ -52,6 +86,25 @@ class InterDetails extends Component {
              style={styles.map}
             />
           </View>
+
+          
+
+          <View style= {styles.center}>
+
+        </View>
+        <View style= {styles.bottom}>
+           <Text style= {styles.destinationText}> Destination </Text>
+           <Text style= {styles.locationText}> Lagos </Text>
+           <Text style= {styles.timeoutText}> Timeout </Text>
+           <Text style= {styles.timeText}> 30:05 </Text>
+           
+
+           <TouchableOpacity onPress={() => this.cancelTrip()} style ={styles.button}>
+             <Text style= {styles.buttonText}> Cancel </Text>
+           </TouchableOpacity>
+
+           
+        </View>
 
           
 
@@ -150,4 +203,4 @@ function mapDispatchToProps(dispatch){
 }
 
 
-export default connect(mapStateToProps,mapDispatchToProps)(InterDetails);
+export default connect(mapStateToProps,mapDispatchToProps)(TripDetails);

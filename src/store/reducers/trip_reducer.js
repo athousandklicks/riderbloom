@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import {
     TRIP_DETAILS,
+    GET_ACTIVE_TRIP,
 
   } from "../types";
   
@@ -12,6 +13,12 @@ import {
         return {
           ...state,
           activeTripDetails: action.payload
+        };
+
+        case GET_ACTIVE_TRIP:
+        return {
+          ...state,
+          getActiveTrip: action.payload
         };
         
       default:

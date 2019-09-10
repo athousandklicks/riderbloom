@@ -17,7 +17,10 @@ import { connect } from 'react-redux';
 import { loginUser} from '../store/actions';
 import { bindActionCreators } from 'redux';
 
+const FIRST_NAME = 'first_name';
 const PHONE_NUMBER = 'phone_number';
+const USER_ID = 'user_id';
+const EMAIL = 'email';
 
 //const user_info = {phone_number:'123456', user_password: '123' };
 
@@ -36,12 +39,23 @@ export default class RiderLogin extends Component{
        }
      }
 
-     async storeUserDetails(phone_number) {
+     async storeUserDetails(first_name, phone_number, email) {
       try {
-          await AsyncStorage.setItem(PHONE_NUMBER, phone_number);
-          console.log('Login details stored successfull');
+        await AsyncStorage.setItem(FIRST_NAME, first_name);
+        await AsyncStorage.setItem(PHONE_NUMBER, phone_number);
+        await AsyncStorage.setItem(EMAIL, email);
+          console.log('Login Phone number stored successfull');
       } catch (error) {
-          console.log('Something went wrong');
+          console.log('Something went wrong with phone No');
+      }
+    }
+
+    async storeUserId(user_id) {
+      try {
+          await AsyncStorage.setItem(USER_ID, JSON.stringify(user_id));
+          console.log('Login ID stored successfull: ' + user_id);
+      } catch (error) {
+          console.log('Something went wrong with User ID');
       }
     }
 
@@ -75,13 +89,21 @@ export default class RiderLogin extends Component{
         if(response.status == true){
             
            let phone = response.phone;
-           this.storeUserDetails(phone);
+           let firstname = response.firstname;
+           let email = response.email;
+           let user_id = response.user_id;
+
+           console.log('PHONE: '+ phone);
+           console.log('USER ID: '+ user_id);
+
+           this.storeUserDetails(firstname, phone, email);
+           this.storeUserId(user_id);
            this.setIsLoggedIn();
            
            this.props.navigation.navigate('PostTrip');
         } else {
             console.log(response.status);
-            this.props.navigation.navigate('Auth');
+            
         }
     })
     .catch(error => console.error('Error', error));

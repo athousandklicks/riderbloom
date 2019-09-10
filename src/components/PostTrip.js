@@ -1,12 +1,27 @@
 /* eslint-disable prettier/prettier */
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, ImageBackground, Image,
-  TextInput,TouchableOpacity, Picker, Button, CheckBox} from 'react-native';
+import {Platform, 
+  StyleSheet, 
+  Text, 
+  View, 
+  ImageBackground, 
+  Image,
+  TextInput,
+  TouchableOpacity, 
+  Picker, Button, CheckBox
+} from 'react-native';
+
+import { connect } from 'react-redux';
+import { getActiveTrip} from '../store/actions';
+import { bindActionCreators } from 'redux';
 
 
 import DateTimePicker from 'react-native-modal-datetime-picker';
+import AsyncStorage from '@react-native-community/async-storage';
 
-export default class PostTrip extends Component {
+let trip_status = ''; 
+
+class PostTrip extends Component {
   constructor(props) {
       super(props)
       this.state = {
@@ -16,9 +31,28 @@ export default class PostTrip extends Component {
         Calendar: '',
         time: "",
         isDateTimePickerVisible: false,
+        user_login_id: '',
     }
   }
 
+  getUserId = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('user_id');
+      console.log('USER ID FROM ASYNC: ', userId);
+      userId ? 
+      this.props.getActiveTrip(this.state.user_login_id)
+      //this.props.getActiveTrip(1)
+      :
+      null
+    } catch (e) {
+      this.props.navigation.navigate('Auth');
+    }
+  }
+
+
+  componentDidMount () {
+   // this.getUserId();
+  }
 
   _showDateTimePicker = () => 
   this.setState({ 
@@ -43,7 +77,7 @@ export default class PostTrip extends Component {
 
     _handlePress = () => {
   let data={}
-    data.user_id=1,
+    data.user_id=3,
     data.from=this.state.Pickup,
     data.to=this.state.Destination,
     data.trip_date=this.state.date,
@@ -63,7 +97,7 @@ export default class PostTrip extends Component {
   .then(response => {
     console.log(response.message);
     console.log(response.trip_details.id)
-     this.props.navigation.navigate('InterDetails', {tripId: response.trip_details.id});
+     this.props.navigation.navigate('TripDetails', {tripId: response.trip_details.id});
       if(response.status == true){
         // this.props.navigation.navigate('InterDetails');
       }else{
@@ -76,84 +110,110 @@ export default class PostTrip extends Component {
 
   static navigationOptions = { header: null, };
 
+  activeTrip = (data) => (
+ 
+    data.getActiveTrip ? 
+    data.getActiveTrip.id === this.state.user_login_id ? 
+    //data.getActiveTrip.id == 2 ? 
+    <View style={styles.container}>
+    <View style={styles.top}>
+        <Text style={styles.headerText}> {data.getActiveTrip.pick_up} </Text>
+        <Text style={styles.secondHeaderText}> {data.getActiveTrip.trip_date} </Text>
+            <View>
+              <Image
+                  source={require('../img/Group.png')}
+                  resizeMode = 'cover'
+                style={styles.map}
+                />
+            </View>
+    </View>
+  </View> 
+  :null
+
+  : <ImageBackground source={require('../img/map.jpg')} style={styles.container}>
+  <View style={styles.menuItems}>
+  <Image
+  source={require('../img/menu.png')}
+  style={styles.menu}
+  />
+  <Image
+  source={require('../img/bell.png')}
+  style={styles.bell}
+  />
+  </View>
+  <View style= {styles.center}>
+
+  </View>
+
+  <View style= {styles.bottom}>
+  <View style= {styles.rectangle}>
+
+  <View>
+  <Text style={styles.doneText}> POST A TRIP </Text>
+
+  <View style= {styles.bluesection}>
+  <Image
+  source={require('../img/blueball.png')}
+  style={styles.blueball}
+  />
+  <TextInput style = {styles.inputBox}
+  placeholder="Set Pickup"
+  placeholderTextColor="#000000"
+  onChangeText={Pickup => this.setState({Pickup})}
+  />
+  <TouchableOpacity>
+  <Image
+  source={require('../img/gps.png')}
+  style={styles.blueball}
+  />
+  </TouchableOpacity>
+  </View>
+
+  <View style= {styles.bluesection}>
+  <Image
+  source={require('../img/marker.png')}
+  style={styles.blueball}
+  />
+  <TextInput style = {styles.inputBox}
+  placeholder="Set Destination"
+  placeholderTextColor="#000000"
+  onChangeText={Destination => this.setState({Destination})}
+  />
+  </View>
+
+  <View style= {styles.bluesection}>
+  <TouchableOpacity onPress={this._showDateTimePicker}>
+           <Text>Show DatePicker</Text>
+      </TouchableOpacity>
+               <DateTimePicker
+                   isVisible = {this.state.isDateTimePickerVisible}
+                   onConfirm = {this._handleDatePicked}
+                   onCancel = {this._hideDateTimePicker}
+                   minimumDate = {new Date()}
+                   mode =  "datetime"
+                   timePickerModeAndroid = 'default'
+                   is24Hour = {false}
+             />
+  </View>
+
+ 
+ <TouchableOpacity onPress={() => this._handlePress()} style ={styles.button}>
+ <Text style={styles.buttonText}> Submit </Text>
+ </TouchableOpacity>
+ 
+</View>
+ </View>
+ </View>
+
+ </ImageBackground>
+  )
+
 
   render(){
     return (
-      <ImageBackground source={require('../img/map.jpg')} style={styles.container}>
-      <View style={styles.menuItems}>
-            <Image
-             source={require('../img/menu.png')}
-             style={styles.menu}
-            />
-            <Image
-             source={require('../img/bell.png')}
-             style={styles.bell}
-            />
-        </View>
-        <View style= {styles.center}>
-
-          </View>
-
-          <View style= {styles.bottom}>
-              <View style= {styles.rectangle}>
-
-              <View>
-              <Text style={styles.doneText}> POST A TRIP </Text>
-
-              <View style= {styles.bluesection}>
-              <Image
-              source={require('../img/blueball.png')}
-             style={styles.blueball}
-              />
-              <TextInput style = {styles.inputBox}
-                placeholder="Set Pickup"
-                placeholderTextColor="#000000"
-                onChangeText={Pickup => this.setState({Pickup})}
-                />
-                <TouchableOpacity>
-                <Image
-                source={require('../img/gps.png')}
-               style={styles.blueball}
-                />
-                </TouchableOpacity>
-                </View>
-
-                <View style= {styles.bluesection}>
-                <Image
-                source={require('../img/marker.png')}
-               style={styles.blueball}
-                />
-                <TextInput style = {styles.inputBox}
-                  placeholder="Set Destination"
-                  placeholderTextColor="#000000"
-                  onChangeText={Destination => this.setState({Destination})}
-                  />
-                  </View>
-
-                  <View style= {styles.bluesection}>
-                  <TouchableOpacity onPress={this._showDateTimePicker}>
-                    <Text>Show DatePicker</Text>
-                      </TouchableOpacity>
-                        <DateTimePicker
-                            isVisible = {this.state.isDateTimePickerVisible}
-                            onConfirm = {this._handleDatePicked}
-                            onCancel = {this._hideDateTimePicker}
-                            minimumDate = {new Date()}
-                            mode =  "datetime"
-                            timePickerModeAndroid = 'default'
-                            is24Hour = {false}
-                      />
-                  </View>
-
-                  <TouchableOpacity onPress={() => this._handlePress()} style ={styles.button}>
-                      <Text style={styles.buttonText}> Submit </Text>
-                  </TouchableOpacity>
-
-              </View>
-            </View>
-         </View>
-
-      </ImageBackground>
+      <View style={styles.container}>
+        {this.activeTrip(this.props.active_trips)}
+      </View>
     );
   }
 }
@@ -344,3 +404,17 @@ const styles = StyleSheet.create({
    marginTop: 13
  },
 });
+
+
+function mapStateToProps(state){
+  return {
+    active_trips: state.active_trips,
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({getActiveTrip}, dispatch);
+}
+
+
+export default connect(mapStateToProps,mapDispatchToProps)(PostTrip);

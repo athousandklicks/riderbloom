@@ -1,8 +1,8 @@
   /* eslint-disable prettier/prettier */
   import React, { Component } from 'react';
   import { connect } from 'react-redux';
-  import { artistsListAll } from '../store/actions';
-  import { bindActionCreators } from 'redux';
+  //import { artistsListAll } from '../store/actions';
+  //import { bindActionCreators } from 'redux';
   import {
     StyleSheet,
     Text,
@@ -16,16 +16,16 @@
   import AsyncStorage from '@react-native-community/async-storage';
 
 
-  class Home extends Component {
+  export default class Home extends Component {
 
-    componentDidMount(){
-      this.props.artistsListAll();
-    }
+    // componentDidMount(){
+    //   this.props.artistsListAll();
+    // }
 
 
-    navigateToArtistDetailsWithId = (item) => {
-      this.props.navigation.navigate('Artist', {itemId: item.id});
-  }
+  //   navigateToArtistDetailsWithId = (item) => {
+  //     this.props.navigation.navigate('Artist', {itemId: item.id});
+  // }
 
  
   _signOutApp = async () => {
@@ -44,7 +44,7 @@
         
       <View style={styles.albumContainer}>
         <ScrollView vertical={true}>
-          {
+          {/* {
             this.props.artists.artistList ?
               this.props.artists.artistList.map((item)=>(
                 <TouchableOpacity
@@ -66,7 +66,7 @@
                 </TouchableOpacity>
               ))
             : null
-          }
+          } */}
 
       <Button title='Sign Out' onPress={this._signOutApp} />
           
@@ -143,15 +143,15 @@
 
 
 
-  function mapStateToProps(state){
-    return {
-      artists: state.artists,
-    }
-  }
+  // function mapStateToProps(state){
+  //   return {
+  //     artists: state.artists,
+  //   }
+  // }
 
-  function mapDispatchToProps(dispatch){
-    return bindActionCreators({artistsListAll}, dispatch)
-  }
+  // function mapDispatchToProps(dispatch){
+  //   return bindActionCreators({artistsListAll}, dispatch)
+  // }
 
 
-  export default connect(mapStateToProps, mapDispatchToProps)(Home)
+  // export default connect(mapStateToProps, mapDispatchToProps)(Home)

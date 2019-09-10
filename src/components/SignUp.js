@@ -16,6 +16,8 @@
       
       const FIRST_NAME = 'first_name';
       const PHONE_NUMBER = 'phone_number';
+      const USER_ID = 'user_id';
+      const EMAIL = 'email';
       
 
     export default class SignUp extends Component {
@@ -33,13 +35,23 @@
       }
 
 
-      async storeUserDetails(first_name, phone_number) {
+      async storeUserDetails(first_name, phone_number, email) {
         try {
             await AsyncStorage.setItem(FIRST_NAME, first_name);
             await AsyncStorage.setItem(PHONE_NUMBER, phone_number);
+            await AsyncStorage.setItem(EMAIL, email);
             console.log('User details stored successfull');
         } catch (error) {
             console.log('Something went wrong');
+        }
+      }
+
+      async storeUserId(user_id) {
+        try {
+            await AsyncStorage.setItem(USER_ID, JSON.stringify(user_id));
+            console.log('Login ID stored successfull: ' + user_id);
+        } catch (error) {
+            console.log('Something went wrong with User ID');
         }
       }
 
@@ -76,12 +88,15 @@
 
             let firstname = response.firstname;
             let phone = response.phone;
+            let user_id = response.user_id;
+            let email = response.email;
 
-           this.storeUserDetails(firstname, phone);
+           this.storeUserDetails(firstname, phone, email);
+           this.storeUserId(user_id);
            this.setIsLoggedIn();
 
            this.props.navigation.navigate('Authentication', {phone_no: phone});
-           console.log('User Phone: '+phone);
+           console.log('User Phone: '+ phone);
  
           } else {
               console.log(response.status);

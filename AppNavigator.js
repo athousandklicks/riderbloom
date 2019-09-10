@@ -28,10 +28,14 @@ import { createStackNavigator } from 'react-navigation-stack';
   import Authentication from './src/components/Authentication';
   import IsVerified from './src/components/IsVerified';
   import PostTrip from './src/components/PostTrip';
-  import InterDetails from './src/components/InterDetails';
+  import TripDetails from './src/components/TripDetails';
+  import UploadIdVerification from './src/components/UploadIdVerification';
+  import UploadSelfieVerification from './src/components/UploadSelfieVerification';
+  import UserVerificationComplete from './src/components/UserVerificationComplete';
+  import Profile from './src/components/profile';
+  import Riderdetails from './src/components/Riderdetails';
+  import RideHistory from './src/components/RideHistory';
 
-import MyHomeScreen from './src/components/MyHomeScreen';
-import MyNotificationsScreen from './src/components/MyNotificationsScreen';
 
 
 const AuthStack = createStackNavigator({ 
@@ -45,13 +49,20 @@ const AppStack = createStackNavigator({
   SignUp: SignUp,
   Authentication: Authentication,
   IsVerified: IsVerified,
-  InterDetails: InterDetails,
+  TripDetails: TripDetails,
+  UploadSelfieVerification: UploadSelfieVerification,
+  UserVerificationComplete: UserVerificationComplete,
+  Riderdetails: Riderdetails,
+  UploadIdVerification: UploadIdVerification,
+     
 });
 
 const DrawerStack = createDrawerNavigator({
   AppStack: AppStack,
-  MyHomeScreen: MyHomeScreen,
-  MyNotificationsScreen: MyNotificationsScreen,
+  Profile: Profile,
+  RideHistory: RideHistory,
+  Home: Home,
+
 });
 
 
