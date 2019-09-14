@@ -100,8 +100,7 @@ export default class PostTrip extends Component {
       .then(response => {
         console.log(response.message);
         console.log(response.trip_details.id)
-        // this.props.navigation.navigate('TripDetails', {tripId: response.trip_details.id});
-         this.props.navigation.navigate('TripAccepted', {tripId: response.trip_details.id});
+         this.props.navigation.navigate('TripDetails2', {tripId: response.trip_details.id});
           if(response.status == true){
             // this.props.navigation.navigate('InterDetails');
           }else{

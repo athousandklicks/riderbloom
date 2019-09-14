@@ -21,7 +21,7 @@ export default class Profile extends Component {
     lname: '',
     phone:'',
     email:'',
-    user_Id:'',
+    user_Id: null,
    
       }
     }
@@ -34,16 +34,11 @@ export default class Profile extends Component {
         const phone = await AsyncStorage.getItem('phone_number');
         const email = await AsyncStorage.getItem('email');
 
-        // this.state.user_Id = userId;
-        // this.state.fname = fname;
-        // this.state.lname = lname;
-        // this.state.phone = phone;
-        // this.state.email = email;
-
         this.setState({ 
           fname: fname,
           phone: phone,
           email: email,
+          user_Id: userId,
 
         });
 
@@ -98,8 +93,9 @@ export default class Profile extends Component {
           
           <View style={styles.category}>
 
-          
-          <TouchableOpacity onPress={()=> this.props.navigation.navigate('PostTrip')}>
+          <TouchableOpacity onPress={()=> this.props.navigation.navigate('EditName', 
+          {UserId: this.state.user_Id})}>
+
           <Text style={styles.fNameTitle}> Name </Text>
               <TextInput style= {styles.fName}
                  value = {this.state.fname}
@@ -107,7 +103,8 @@ export default class Profile extends Component {
               />
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={()=> this.props.navigation.navigate('PostTrip')}>
+              <TouchableOpacity onPress={()=> this.props.navigation.navigate('EditPhone', 
+              {UserId: this.state.user_Id})}>
               <Text style={styles.fNameTitle}> Phone </Text>
               <TextInput style= {styles.fName}
                  value = {this.state.phone}
@@ -115,13 +112,26 @@ export default class Profile extends Component {
               />
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={()=> this.props.navigation.navigate('PostTrip')}>
+              <TouchableOpacity onPress={()=> this.props.navigation.navigate('EditEmail', 
+              {UserId: this.state.user_Id})}>
               <Text style={styles.fNameTitle}> Email </Text>
               <TextInput style= {styles.fName}
                  value = {this.state.email}
                  editable={false}
               />
               </TouchableOpacity>
+
+              <TouchableOpacity onPress={()=> this.props.navigation.navigate('EditPassword', 
+              {UserId: this.state.user_Id})}>
+              
+              <Text style={styles.fNameTitle}
+              placeholder="********"> Password</Text>
+              <TextInput style= {styles.fName}
+                 value = '********'
+                 editable={false}
+              />
+              </TouchableOpacity>
+
           </View>
       </View>
 

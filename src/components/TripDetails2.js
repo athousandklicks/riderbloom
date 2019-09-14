@@ -15,7 +15,7 @@ import { activeTripDetails} from '../store/actions';
 import { bindActionCreators } from 'redux';
 
 
-class TripDetails extends Component {
+export default class TripDetails2 extends Component {
 
     constructor(props){
         super(props);
@@ -71,9 +71,7 @@ class TripDetails extends Component {
               console.log(response.trip_details.id)
                this.props.navigation.navigate('Landing');
                 if(response.status == true){
-                  ToastAndroid.show
-                  ('Trip Request has been cancelled successfully', ToastAndroid.SHORT);
-                  this.props.navigation.navigate('Landing');
+                  // this.props.navigation.navigate('InterDetails');
                 }else{
                   console.log(response.status);
                     console.log(response);
@@ -171,17 +169,34 @@ class TripDetails extends Component {
                     <View style={styles.TagDestination}>
                         <Text style={styles.TripTagText}>Benin</Text>
                     </View>
+                    <View style={styles.TagDestination}>
+                        <Text style={styles.TripTagText}>Ewu</Text>
+                    </View>
+                    <View style={styles.TagDestination}>
+                        <Text style={styles.TripTagText}>Agbor</Text>
+                    </View>
+                   
                 </View>
 
             </View>
 
-            <TouchableOpacity onPress={() => this.cancelTrip()} style ={styles.button}>
+            <View style={styles.TripDriversNote}>
+            <Text style={styles.TripInfoTitle}>Driver's Note</Text>
+            <Text style={styles.DriverNoteText}>Integer scelerisque diam 
+            vitae aliquam fringilla. In vitae eros ac libero mattis 
+            molestie nec in magna... It is a long established fact 
+            that a reader will be </Text>
+
+            </View>
+
             <View style={styles.TripButtonWrapper}>
                 <View style={styles.TripRequestButton}>
-                    <Text style={styles.TripRequestButtonText}>Cancel Request</Text>
+                    <Text style={styles.TripRequestButtonText}>Request</Text>
+                </View>
+                <View style={styles.TripCancelButton}>
+                    <Text style={styles.TripCancelButtonText}>Cancel</Text>
                 </View>
             </View>
-            </TouchableOpacity>
         </View>
         : null
     }
@@ -360,78 +375,50 @@ const styles = StyleSheet.create({
     },
 
     TripButtonWrapper:{
-      flexDirection: 'row',
-       justifyContent: 'center',
-      alignItems: 'center',
-  },
-
-  TripCancelButton: {
-      flex: 1,
-      backgroundColor: '#ffffff',
-      padding: 8,
-      borderRadius: 6,
-      marginTop: 20,
-      marginLeft: 5,
-      borderColor: '#bcc0c6',
-      borderStyle: 'solid',
-      borderWidth: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+        flexDirection: 'row',
+         justifyContent: 'space-between',
     },
 
-  TripRequestButton: {
-      backgroundColor: '#222a46',
-      padding: 8,
-      borderRadius: 6,
-      marginTop: 20,
-      width:200,
-      marginRight: 5,
-      borderColor: '#bcc0c6',
-      borderStyle: 'solid',
-      borderWidth: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
+    TripCancelButton: {
+        flex: 1,
+        backgroundColor: '#ffffff',
+        padding: 8,
+        borderRadius: 6,
+        marginTop: 20,
+        marginLeft: 5,
+        borderColor: '#bcc0c6',
+        borderStyle: 'solid',
+        borderWidth: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
 
-    TripRequestButton2: {
-      backgroundColor: '#ffffff',
-      padding: 8,
-      borderRadius: 6,
-      marginTop: 20,
-      width:200,
-      marginRight: 5,
-      borderColor: '#222a46',
-      borderStyle: 'solid',
-      borderWidth: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
+    TripRequestButton: {
+        flex: 1,
+        backgroundColor: '#222a46',
+        padding: 8,
+        borderRadius: 6,
+        marginTop: 20,
+        marginRight: 5,
+        borderColor: '#bcc0c6',
+        borderStyle: 'solid',
+        borderWidth: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
 
-  TripCancelButtonText: {
-      color: '#4c4d4e',
-      fontWeight: 'bold',
-      textAlign: 'center',
-      fontSize: 16,
-    },
+    TripCancelButtonText: {
+        color: '#4c4d4e',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        fontSize: 16,
+      },
 
-   TripRequestButtonText: {
-      color: '#ffffff',
-      fontWeight: 'bold',
-      textAlign: 'center',
-      fontSize: 16,
-    },
+     TripRequestButtonText: {
+        color: '#ffffff',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        fontSize: 16,
+      },
 
 });
-
-function mapStateToProps(state){
-  return {
-    active_trips: state.active_trips,
-  }
-}
-
-function mapDispatchToProps(dispatch){
-  return bindActionCreators({activeTripDetails}, dispatch);
-}
-
-
-export default connect(mapStateToProps,mapDispatchToProps)(TripDetails);

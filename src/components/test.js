@@ -15,17 +15,19 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 
 
-export default class PostTrip extends Component {
+export default class RiderInfoSearch extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
           date:'',
-          pickup: '',
-          destination: '',
+          Pickup: '',
+          Destination: '',
+          Calendar: '',
           time: "",
           isDateTimePickerVisible: false,
           user_login_id: '',
+          isTestVisible: false,
           
       }
     }
@@ -41,10 +43,9 @@ export default class PostTrip extends Component {
           this.props.navigation.navigate('Auth');
         }
       }
-
+    
     
       componentDidMount () {
-    
         const { navigation } = this.props;
            const userId = navigation.getParam('UserId', 'NO-ID');
            this.setState({ 
@@ -62,12 +63,14 @@ export default class PostTrip extends Component {
     
       _hideDateTimePicker = () => 
       this.setState({ 
-        isDateTimePickerVisible: false 
+        isDateTimePickerVisible: false
       });
+
     
       _handleDatePicked = (date) => {
         this.setState({ 
-          date: date 
+          date: date,
+          isTestVisible: true,
         });
 
        // this.state.date.JSON.stringify();
@@ -75,14 +78,28 @@ export default class PostTrip extends Component {
       //  console.log('A date has been picked: ', this.state.date.JSON.stringify());
         console.log('A State date has been picked: ', this.state.date);
           this._hideDateTimePicker();
+          this.ShowHideText();
       };
 
       
-    postTrip = () => {
+      ShowHideText = () =>{
+        if(this.state.isTestVisible == true)
+        {
+          this.setState({isTestVisible: false})
+        }
+        else
+        {
+          this.setState({isTestVisible: true})
+        }
+      }
+      
+    
+    
+        _handlePress = () => {
       let data={}
         data.user_id=this.state.user_login_id,
-        data.from=this.state.pickup,
-        data.to=this.state.destination,
+        data.from=this.state.Pickup,
+        data.to=this.state.Destination,
         data.trip_date=this.state.date,
         //data.trip_date=this.state.Time,
         console.log(data)
@@ -100,8 +117,7 @@ export default class PostTrip extends Component {
       .then(response => {
         console.log(response.message);
         console.log(response.trip_details.id)
-        // this.props.navigation.navigate('TripDetails', {tripId: response.trip_details.id});
-         this.props.navigation.navigate('TripAccepted', {tripId: response.trip_details.id});
+         this.props.navigation.navigate('TripDetails', {tripId: response.trip_details.id});
           if(response.status == true){
             // this.props.navigation.navigate('InterDetails');
           }else{
@@ -122,7 +138,9 @@ export default class PostTrip extends Component {
 
                 <View style={styles.Header}>
 
-                
+                    
+
+
                 </View>
 
                 <View style={styles.Body}>
@@ -136,19 +154,23 @@ export default class PostTrip extends Component {
                             <TextInput style = {styles.inputBox}
                                 placeholder="Enter Pick Up City"
                                 placeholderTextColor="#313233"
-                                onChangeText={pickup => this.setState({pickup})}
-                                value = {this.state.pickup}
+                                onChangeText={name => this.setState({name})}
+                                value = {this.state.name}
+                                onSubmitEditing={()=> this.phone.focus()}
                             />
 
                             <TextInput style = {styles.inputBox}
                                 placeholder="Enter Destination City"
                                 placeholderTextColor="#313233"
-                                onChangeText={destination => this.setState({destination})}
-                                value = {this.state.destination}
+                                onChangeText={name => this.setState({name})}
+                                value = {this.state.name}
+                                onSubmitEditing={()=> this.phone.focus()}
                             />            
                             </View>
                             
                             <View style={styles.TripTagsWrapper}>
+
+                                             
                             <TouchableOpacity onPress={this._showDateTimePicker}>
                                 <View style={styles.DestinationTagNames}>
                                     <Image
@@ -168,13 +190,21 @@ export default class PostTrip extends Component {
                                  />
 
                                 <View style={styles.TripInfoWrapper}>
-                                    <View style={styles.TripDate}>
-                                    <Text style={styles.TripInfoTitle}>Date</Text>
+                                <View style={styles.TripDate}>
+                                    { 
+                                        this.state.isTestVisible ? 
+                                        <Text style={styles.TripInfoTitle}>Date</Text>
+                                         : null
+                                    }
                                     <Text style={styles.TripInfoText}> 
                                     {this.state.date.toString().slice(0,15)}</Text>
                                 </View>
                                 <View style={styles.TripTime}>
-                                    <Text style={styles.TripInfoTitle}>Time</Text>
+                                    { 
+                                        this.state.isTestVisible ? 
+                                        <Text style={styles.TripInfoTitle}>Time</Text>
+                                         : null
+                                    }
                                     <Text style={styles.TripInfoText}>
                                     {this.state.date.toString().slice(17,24)}</Text>
                                 </View>
@@ -183,16 +213,13 @@ export default class PostTrip extends Component {
                                    
                             </View>
                         </View>
-
+                        <View style={styles.TripButtonWrapper}>
+                            <View style={styles.TripRequestButton}>
+                                <Text style={styles.TripRequestButtonText}>Post Trip</Text>
+                            </View>
+                        </View>
                         </View>
 
-                        <TouchableOpacity onPress={() => this.postTrip()} style ={styles.button}>
-                            <View style={styles.TripButtonWrapper}>
-                                <View style={styles.TripRequestButton}>
-                                    <Text style={styles.TripRequestButtonText}>Post Trip</Text>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
                         
 
                     </View>
@@ -317,6 +344,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         textAlign: 'left',
         marginBottom: 1,
+        fontWeight: 'bold',
 
     },
 

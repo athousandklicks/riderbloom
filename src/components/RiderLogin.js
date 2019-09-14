@@ -100,7 +100,7 @@ export default class RiderLogin extends Component{
            this.storeUserId(user_id);
            this.setIsLoggedIn();
            
-           this.props.navigation.navigate('PostTrip');
+           this.props.navigation.navigate('Splash');
         } else {
             console.log(response.status);
             
