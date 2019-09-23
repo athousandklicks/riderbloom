@@ -1,94 +1,16 @@
 /* eslint-disable prettier/prettier */
 import React, {Component} from 'react';
-import {Platform, 
-  StyleSheet, 
-  Text, 
-  View, 
-  ImageBackground, 
-  Image,
-  TextInput,
-  TouchableOpacity,
-  BackHandler,
-  ToastAndroid,
-  Alert,
+import {
+    Platform,
+    StyleSheet,
+    Text,
+    View,
+    ImageBackground,
+    Image,
 } from 'react-native';
 
-  import AsyncStorage from '@react-native-community/async-storage';
 
-export default class Landing extends Component{
-
-  constructor(props){
-    super(props)
-
-    this.state = {
-    name: '',
-    user_Id: null,
-      }
-    }
-
-    getUserDetails = async () => {
-      try {
-        const userId = await AsyncStorage.getItem('user_id');
-        const firstName = await AsyncStorage.getItem('first_name');
-        console.log('USER ID FROM ASYNC: ' + userId);
-        console.log('USER Name FROM ASYNC: ' + firstName);
-        this.setState({ 
-          user_Id: userId, 
-          name: firstName,
-        });
-      } catch (e) {
-        this.props.navigation.navigate('Auth');
-      }
-    }
-
-    // closeAppAlerts(){
-    //   Alert.alert(
-    //     'Exit',
-    //     'Do You Want to Cancel exit Bloom?',
-    //     [
-    //       {
-    //         text: 'Cancel',
-    //         onPress: () => console.log('Cancel Pressed'),
-    //         style: 'cancel',
-    //       },
-    //       {text: 'OK', onPress: () => BackHandler.exitApp()},
-    //     ],
-    //     {cancelable: false},
-    //   );
-  
-    //   }
-
-    //   handleBackButton = () => {
-    //     Alert.alert(
-    //       'Exit',
-    //       'Do You Want to Cancel exit Bloom?',
-    //       [
-    //         {
-    //           text: 'Cancel',
-    //           onPress: () => console.log('Cancel Pressed'),
-    //           style: 'cancel',
-    //         },
-    //         {text: 'OK', onPress: () => BackHandler.exitApp()},
-    //       ],
-    //       {cancelable: false},
-    //     );
-    //   return true;
-    // }
-
-  //  componentWillUnmount() {
-  //   BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-  // }
-
-//   handleBackButton() {
-//    ToastAndroid.show('Back button is pressed', ToastAndroid.SHORT);
-//     return true;
-// }
-
-    componentDidMount () {
-      this.getUserDetails();
-    //  BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-    }
-
+export default class Landing2 extends Component {
 
     static navigationOptions = { header: null, };
 
@@ -102,17 +24,13 @@ export default class Landing extends Component{
                     
                     </View>
                     <View style={styles.Bottom}>
-                        <Text style={styles.Name}>Hello {this.state.name},</Text>
+                        <Text style={styles.Name}>Hello Ome,</Text>
                         <Text style={styles.Greeting}>Where would you like to go today?</Text>
                         
-                        
                         <View style={styles.Botton}>
-                        <TouchableOpacity onPress={()=> this.props.navigation.navigate('PostTrip', 
-                            {UserId: this.state.user_Id})}>
                             <View style={styles.Post}>
                                 <Text style={styles.PostText}>Post a Trip</Text>
                             </View>
-                        </TouchableOpacity>
                             <View style={styles.Icon}>
                                 <Image
                                     source={require('../img/post_arrow.png')}

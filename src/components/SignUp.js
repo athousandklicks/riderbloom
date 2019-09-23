@@ -1,7 +1,6 @@
     /* eslint-disable prettier/prettier */
     import React, {Component} from 'react';
     import {
-      Platform, 
       StyleSheet, 
       Text, 
       View, 
@@ -34,6 +33,10 @@
         }
       }
 
+
+      componentDidMount () {
+        console.log('Sign up mounted');
+      }
 
       async storeUserDetails(first_name, phone_number, email) {
         try {
@@ -183,7 +186,7 @@
       inputBox: {
         alignSelf: 'stretch',
         margin: 15,
-        height: 40,
+        height: 55,
         borderBottomColor: 'black',
         borderBottomWidth: 1,
         fontSize: 18,

@@ -9,8 +9,12 @@ export default class CustomSidebarMenu extends Component {
   constructor() {
     super();
     //Setting up the Main Top Large Image of the Custom Sidebar
-    this.proileImage =
-      'https://aboutreact.com/wp-content/uploads/2018/07/sample_img.png';
+    // this.proileImage =
+    //   'https://aboutreact.com/wp-content/uploads/2018/07/sample_img.png';
+
+    this.proileImage = './avatar.png';
+
+      
     //Array of the sidebar navigation option with icon and screen to navigate
     //This screens can be any screen defined in Drawer Navigator in App.js
     //You can find the Icons from here https://material.io/tools/icons/
@@ -92,9 +96,9 @@ const styles = StyleSheet.create({
   },
   sideMenuProfileIcon: {
     resizeMode: 'center',
-    width: 150,
-    height: 150,
+    width: 120,
+    height: 120,
     marginTop: 20,
-    borderRadius: 150 / 2,
+    borderRadius: 120 / 2,
   },
 });

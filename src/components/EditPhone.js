@@ -7,7 +7,8 @@ import {Platform,
     TouchableOpacity, 
     Image, 
     ImageBackground, 
-    TextInput} from 'react-native';
+    TextInput,
+    ToastAndroid} from 'react-native';
     import AsyncStorage from '@react-native-community/async-storage';
 
 const PHONE_NUMBER = 'phone_number';
@@ -18,6 +19,7 @@ export default class EditEmail extends Component {
     super(props);
     //this.getPhone();
     this.state = {
+              cur_phone:'',
               phone: null,
               user_id: null,
           };
@@ -31,6 +33,20 @@ export default class EditEmail extends Component {
     this.state.user_id = userId;
     console.log('TRIP ID: '+ userId);
     console.log('TRIP ID: '+ this.state.user_id);
+    this.getDetails();
+  }
+
+  getDetails = async () => {
+    try {
+      const current_phone = await AsyncStorage.getItem('phone_number');
+
+      this.setState({ 
+        cur_phone: current_phone,
+      });
+
+    } catch (e) {
+      this.props.navigation.navigate('Auth');
+    }
   }
 
 
@@ -79,7 +95,11 @@ export default class EditEmail extends Component {
 
           this.removeValue();
           this.updateUserPhone(new_phone);
-         // this.goBack();
+
+          ToastAndroid.show
+          ('Phone Number Successfully Updated ', ToastAndroid.SHORT);
+
+          this.props.navigation.goBack();
 
          this.props.navigation.navigate('Profile');
          console.log('Updated phone: '+ new_phone);
@@ -92,133 +112,111 @@ export default class EditEmail extends Component {
     .catch(error => console.error('Error', error));
   }
 
+  static navigationOptions = {
+    title: 'Update Phone',
+  };
    
-      render() {
-        return (
-      <View style={styles.container}>
-    
-          <View style={styles.top}>
+       render() {
+            return (
+              <View style={styles.MainContainer}>
+                    <View style={styles.Body}>
+                                <Text style={styles.LabelText}>Phone</Text>
+                                <TextInput style = {styles.inputBox}
+                                placeholder= {this.state.cur_phone}
+                                keyboardType="numeric"
+                                placeholderTextColor="#313233"
+                                  onChangeText={phone => this.setState({phone})}
+                                  value = {this.state.phone}
+                                />
+                                
+                            <TouchableOpacity onPress={() => this.updatePhone()} style ={styles.button}>
+                                <View style={styles.TripButtonWrapper}>
+                                    <View style={styles.TripRequestButton}>
+                                        <Text style={styles.TripRequestButtonText}>Save</Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                        
+                        <View style= {styles.bottom}>
+                                <Image source={require('../img/log.png')}  style={styles.backgroundImage} />
+                            </View>
+
+                    </View>
+                );
+            
+              }
+            }
+            
+            const styles = StyleSheet.create({
+            MainContainer: {
+            flex: 1,
+            backgroundColor: '#dfe2ee',
+            alignSelf: 'stretch'
+            },
+            
+            Body: {
+              marginLeft: 18,
+              marginRight: 18,
+              marginTop:10,
+              flex: 3,
+            },
         
-                 <Text style={styles.secondHeaderText}>Update Email</Text>
-          </View>
-    
-          <View style= {styles.center}>
-          <View style={styles.container}>
-            <TextInput style = {styles.inputBox}
-              placeholder="Enter Phone Number"
-              placeholderTextColor="#313233"
-              keyboardType="numeric"
-                onChangeText={phone => this.setState({phone})}
-                value = {this.state.phone}
-              />
-
-          <TouchableOpacity 
-                onPress={() => this.updatePhone()} 
-                style ={styles.button}>
-               <Text style= {styles.buttonText}>Update Phone</Text>
-             </TouchableOpacity>
- 
-          </View>
-    
-          <View style= {styles.bottom}>
-               <Image source={require('../img/log.png')}  style={styles.backgroundImage} />
-          </View>
-      </View>
-      </View>
-        );
-      }
-}
-
-const styles = StyleSheet.create({
-    container: {
-      flexGrow: 1,
-      backgroundColor:'white'
-    },
-    form : {
-      flexGrow: 1,
-     borderRadius: 15,
-      backgroundColor:'white',
-      margin: 0,
-      paddingBottom: 40,
-    },
-    inputBox: {
-      alignSelf: 'stretch',
-      margin: 15,
-      height: 40,
-      borderBottomColor: 'black',
-      borderBottomWidth: 1,
-      fontSize: 18,
-        width: 270,
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingLeft: 40
-    },
-    forgotPassword: {
-      color: 'blue',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginLeft: 100,
-      textAlign: 'right'
-    },
-    top: {
-      height: '35%',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: 40
-    },
-    center: {
-      height: '45%',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    bottom: {
-      height: '10%',
-    },
-    headerText:{
-    fontSize: 20,
-    color: '#12213a',
-    marginVertical: 10,
-    alignItems: 'center',
-    fontWeight: '900',
-    paddingTop: 80,
-  },
-    secondHeaderText: {
-    fontSize: 15,
-    color: '#2e2f30',
-    marginVertical: 5,
-    alignItems: 'center',
-    paddingBottom: 60
-     },
-     button: {
-      width: 270,
-
-      backgroundColor: '#12213a',
-      marginVertical:20,
-      marginBottom:30,
-      paddingVertical: 15
-    },
-    buttonText: {
-      fontSize: 16,
-      fontWeight: '800',
-      color: 'white',
-      textAlign: 'center'
-    },
-    signUpText: {
-      flexGrow: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: 30,
-      flexDirection: 'row',
-      paddingBottom: 20
-    },
-    signUp:{
-      fontSize: 15,
-      color: 'black',
-        fontWeight: '700'
-    },
-    logInButton: {
-      fontWeight: '900',
-      fontSize: 16,
-      color: 'blue'
-    },
-  });
+            bottom: {
+              flex: 1,
+            },
+            
+            inputBox: {
+            alignSelf: 'stretch',
+            height: 55,
+            borderRadius:8,
+            fontSize: 16,
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingLeft: 20,
+            paddingRight: 20,
+            backgroundColor: '#ffffff',
+            marginTop:10,
+            },
+            
+            LabelText:{
+            marginTop:20,
+            fontWeight:'bold',
+            },
+            TripButtonWrapper:{
+            flexDirection: 'row',
+             justifyContent: 'space-between',
+            },
+            
+            
+            TripRequestButton: {
+            flex: 1,
+            backgroundColor: '#222a46',
+            padding: 8,
+            borderRadius: 6,
+            marginTop: 30,
+            borderColor: '#bcc0c6',
+            borderStyle: 'solid',
+            borderWidth: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 55,
+            
+            },
+            
+            TripCancelButtonText: {
+            color: '#4c4d4e',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            fontSize: 20,
+            },
+            
+            TripRequestButtonText: {
+            color: '#ffffff',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            fontSize: 20,
+            },
+            
+            });
+            

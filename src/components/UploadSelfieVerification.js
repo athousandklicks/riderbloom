@@ -60,7 +60,7 @@ body: body, // data can be `string` or {object}!
 
   console.log(response);
 
-  this.props.navigation.navigate('VerifiedThree');
+  this.props.navigation.navigate('UserVerificationComplete');
 
   if(response.status == true){
 

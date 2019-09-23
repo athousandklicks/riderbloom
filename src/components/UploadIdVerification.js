@@ -62,7 +62,7 @@ body: body, // data can be `string` or {object}!
 
   console.log(response);
 
-  this.props.navigation.navigate('VerifiedTwo');
+  this.props.navigation.navigate('UploadSelfieVerification');
 
   if(response.status == true){
 

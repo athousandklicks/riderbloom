@@ -15,7 +15,7 @@ import {Platform,
 
   import AsyncStorage from '@react-native-community/async-storage';
 
-export default class Landing extends Component{
+export default class WelcomePage extends Component{
 
   constructor(props){
     super(props)

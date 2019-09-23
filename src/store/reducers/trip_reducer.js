@@ -2,6 +2,7 @@
 import {
     TRIP_DETAILS,
     GET_ACTIVE_TRIP,
+    GET_RIDE_HISTORY_ALL,
 
   } from "../types";
   
@@ -21,6 +22,12 @@ import {
           getActiveTrip: action.payload
         };
         
+        case GET_RIDE_HISTORY_ALL:
+        return {
+          ...state,
+          getRideHistoryAll: action.payload
+        };
+
       default:
         return state;
     }

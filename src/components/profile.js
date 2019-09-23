@@ -73,193 +73,235 @@ export default class Profile extends Component {
     ),
   };
 
-  render() {
-    return (
-      <ScrollView>
-      <View style={styles.container}>
-         <View style={styles.top}>
-           <Text style={styles.headerText}> Profile </Text>
+static navigationOptions = {
+  title: 'Profile 2',
+};
 
-            <View>
-                 <Image
-                     source={require('../img/avatar.png')}
-                     style={styles.CircleShapeView}
-                 />
-             </View>
-              <Text style={styles.secondText}> Edit Profile </Text>
-        </View>
 
-      <View style= {styles.center}>
-          
-          <View style={styles.category}>
 
-          <TouchableOpacity onPress={()=> this.props.navigation.navigate('EditName', 
-          {UserId: this.state.user_Id})}>
+render() {
+  return (
+      <View style={styles.MainContainer}>
+          <View style={styles.Body}>
+                  <View style={styles.Top}>
+                      <Image
+                          source={require('../img/avatar.png')}
+                          style={styles.CircleShapeView}
+                      />
+                  </View>
 
-          <Text style={styles.fNameTitle}> Name </Text>
-              <TextInput style= {styles.fName}
-                 value = {this.state.fname}
-                 editable={false}
-              />
-              </TouchableOpacity>
+                  <View style={styles.Centre}>
+                  <TouchableOpacity onPress={()=> this.props.navigation.navigate('EditName', 
+                  {UserId: this.state.user_Id})}>
+                      <Text style={styles.LabelText}>Name</Text>
+                      <TextInput style = {styles.inputBox}
+                      placeholder={this.state.fname}
+                      placeholderTextColor="#000000" 
+                          editable={false} 
+                      />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=> this.props.navigation.navigate('EditPhone', 
+                    {UserId: this.state.user_Id})}>
+                      <Text style={styles.LabelText}>Phone</Text>
+                      <TextInput style = {styles.inputBox}
+                      placeholder={this.state.phone}
+                      placeholderTextColor="#000000" 
+                          editable={false} 
+                      />  
+                      </TouchableOpacity>
 
-              <TouchableOpacity onPress={()=> this.props.navigation.navigate('EditPhone', 
-              {UserId: this.state.user_Id})}>
-              <Text style={styles.fNameTitle}> Phone </Text>
-              <TextInput style= {styles.fName}
-                 value = {this.state.phone}
-                 editable={false}
-              />
-              </TouchableOpacity>
+                      <TouchableOpacity onPress={()=> this.props.navigation.navigate('EditEmail', 
+                      {UserId: this.state.user_Id})}>
+                      <Text style={styles.LabelText}>Email</Text>
+                      <TextInput style = {styles.inputBox}
+                      placeholder={this.state.email}
+                      placeholderTextColor="#000000" 
+                      editable={false}
+                      />
+                      </TouchableOpacity>
 
-              <TouchableOpacity onPress={()=> this.props.navigation.navigate('EditEmail', 
-              {UserId: this.state.user_Id})}>
-              <Text style={styles.fNameTitle}> Email </Text>
-              <TextInput style= {styles.fName}
-                 value = {this.state.email}
-                 editable={false}
-              />
-              </TouchableOpacity>
+                      <TouchableOpacity onPress={()=> this.props.navigation.navigate('EditPassword', 
+                      {UserId: this.state.user_Id})}>
+                      <Text style={styles.LabelText}>Password</Text>
+                      <TextInput style = {styles.inputBox}
+                          placeholder="********"
+                          placeholderTextColor="#000000" 
+                          editable={false} 
+                      />
+                      </TouchableOpacity>
+                  </View>
 
-              <TouchableOpacity onPress={()=> this.props.navigation.navigate('EditPassword', 
-              {UserId: this.state.user_Id})}>
-              
-              <Text style={styles.fNameTitle}
-              placeholder="********"> Password</Text>
-              <TextInput style= {styles.fName}
-                 value = '********'
-                 editable={false}
-              />
-              </TouchableOpacity>
 
+                  
+              <View style ={styles.Bottom}>
+                  <TouchableOpacity onPress={() => this._signOutApp()} style={styles.Botton}>
+                      <View style={styles.Icon}>
+                          <Image
+                              source={require('../img/logout1.png')}
+                              resizeMode = 'cover'
+                          />
+                      </View>
+                      
+                      <View style={styles.Post}>
+                          <Text style={styles.PostText}>Logout</Text>
+                      </View>
+                  </TouchableOpacity>
+              </View>
+                  
+                  
           </View>
       </View>
-
-        <View style= {styles.bottom}>
- 
-        <TouchableOpacity 
-                onPress={() => this._signOutApp()} 
-                style ={styles.button}>
-               <Text style= {styles.buttonText}>Log Out</Text>
-             </TouchableOpacity>
-
-          </View>
-        </View>
-
-      </ScrollView>
-    );
-  }
+  );
+}
 }
 
+
+
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor:'#ffffff'
-  },
-  top: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  bottom: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  headerText:{
-    fontSize: 20,
-    color: '#011f54',
-    marginVertical: 50,
-    alignItems: 'center',
-    fontWeight: '500',
- 
-  },
-  secondText:{
-    fontSize: 23,
-    color: '#011f54',
-    marginVertical: 50,
-    alignItems: 'center',
-    fontWeight: '500',
-    marginTop: 10
-  },
-  CircleShapeView: {
-    width: 100,
-    height: 100,
-    borderRadius: 100/2,
-    backgroundColor: '#a7a7a7',
-  
-  },
-  subText: {
-    color: '#011f54',
-    fontWeight: '300',
-    marginLeft: 60,
-    fontSize: 17
-  },
-  active: {
-    color: '#cc0c0c',
-    fontWeight: '500',
-    marginLeft: 60,
-    fontSize: 25
-  },
-
-  active2: {
-    marginLeft: 60,
-  }, 
-
-  fName: {
-    marginLeft:40,
-    color: '#000000',
-    fontWeight: '400',
-    marginRight: 40,
-    borderBottomWidth: 2,
-    borderBottomColor: '#dddddd',
-    fontSize: 22,
-    marginBottom: 30,
-    paddingTop:1
-   
-  },
-
-  fNameTitle: {
-    marginLeft:40,
-    color: '#011f54',
-    fontWeight: '200',
-    marginRight: 40,
-    fontSize: 15,
-    marginBottom: 2,
-
-  },
-
-category: {
-    flexGrow: 1,
-alignItems: 'stretch',
+MainContainer: {
+  flex: 1,
+  backgroundColor: '#dfe2ee',
+  alignSelf: 'stretch'
 },
-whereBox: {
-  color: '#0e1011',
-    marginLeft: 40,
-    fontWeight: '100',
-    fontSize: 17,
-    marginBottom: 60,
+
+Body: {
+  marginLeft: 18,
+  marginRight: 18,
+  flex: 1,
+  paddingTop: 10,
+  marginBottom:5
 },
-logout:{
-  marginRight: 300,
-  marginTop: 20,
-  resizeMode : 'stretch',
+
+Top: {
+  flex: 3,
+  backgroundColor: '#dfe2ee',
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+
+Centre: {
+  flex: 8,
+  backgroundColor: '#dfe2ee',
+  //marginBottom:15
+},
+
+Bottom: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+},
+
+Botton: {
+  flex: 1, 
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  backgroundColor: '#ff0310',
+  marginTop:50,
+  borderRadius: 10,
+  paddingTop:13,
+  marginBottom:5,
+  height:55
 },
 
 
-button: {
-  width: 270,
+CircleShapeView: {
+  width: 120,
+  height: 120,
+  borderRadius: 120/2,
+  backgroundColor: '#a7a7a7',
 
-  backgroundColor: '#12213a',
-  marginVertical:20,
-  marginBottom:30,
-  paddingVertical: 15
 },
-buttonText: {
+
+inputBox: {
+  alignSelf: 'stretch',
+  height: 50,
+  borderRadius:8,
   fontSize: 16,
-  fontWeight: '800',
-  color: 'white',
-  textAlign: 'center'
-}, 
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingLeft: 20,
+  paddingRight: 20,
+  backgroundColor: '#ffffff',
+  marginTop:5,
+},
 
+Post:{
+  flex:3, 
+ 
+},
+
+Icon:{
+  flex: 1, 
+  marginLeft:20,
+  paddingTop: 3,
+},
+
+PostText:{
+
+  color: '#ffffff',
+  paddingLeft:40,
+  fontWeight:'bold',
+  fontSize: 18,
+},
+
+
+
+LabelText:{
+  marginTop:10,
+  fontWeight:'bold',
+},
+
+TripDateTimeWrapper:{
+  flexDirection: 'row',
+   justifyContent: 'space-between',
+},
+
+TripTime: {
+  flex: 1,
+  paddingLeft: 4,
+  borderRadius: 6,
+},
+
+TripDate: {
+  flex: 1,
+  paddingRight: 4,
+  borderRadius: 6,
+},
+
+TripButtonWrapper:{
+  flexDirection: 'row',
+   justifyContent: 'space-between',
+},
+
+
+TripRequestButton: {
+  flex: 1,
+  backgroundColor: '#222a46',
+  padding: 8,
+  borderRadius: 6,
+  marginTop: 30,
+  borderColor: '#bcc0c6',
+  borderStyle: 'solid',
+  borderWidth: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: 55,
+  
+},
+
+TripCancelButtonText: {
+  color: '#4c4d4e',
+  fontWeight: 'bold',
+  textAlign: 'center',
+  fontSize: 16,
+},
+
+TripRequestButtonText: {
+  color: '#ffffff',
+  fontWeight: 'bold',
+  textAlign: 'center',
+  fontSize: 16,
+},
 });
+
+
+

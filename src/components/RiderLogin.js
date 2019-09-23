@@ -39,6 +39,18 @@ export default class RiderLogin extends Component{
        }
      }
 
+
+     getDetails = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('user_id');
+        if(userId != null){
+
+        }
+      } catch (e) {
+        this.props.navigation.navigate('Auth');
+      }
+    }
+
      async storeUserDetails(first_name, phone_number, email) {
       try {
         await AsyncStorage.setItem(FIRST_NAME, first_name);
@@ -182,7 +194,7 @@ const styles = StyleSheet.create({
   inputBox: {
     alignSelf: 'stretch',
     margin: 15,
-    height: 40,
+    height: 55,
     borderBottomColor: 'black',
     borderBottomWidth: 1,
     fontSize: 18,

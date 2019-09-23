@@ -60,7 +60,17 @@ global.currentScreenIndex = 0;
   import TripDetails2 from './src/components/TripDetails2';
 
   import TripAccepted from './src/components/TripAccepted';
+  import DriverDetails from './src/components/DriverDetails';
 
+  import PostTrip1 from './src/components/PostTrip1';
+  import TripAccepted1 from './src/components/TripAccepted1';
+
+  import PendingTrip from './src/components/PendingTrip';
+  import WelcomePage from './src/components/WelcomePage';
+  import WelcomeActivePage from './src/components/WelcomeActivePage';
+
+  import Landing4 from './src/components/Landing4';
+  
 
   
 
@@ -141,8 +151,19 @@ const AuthStack = createStackNavigator({
 });
 
 const AppStack = createStackNavigator({ 
-   
-  Splash:Splash,
+   Splash:Splash,
+  WelcomePage:WelcomePage,
+ 
+  WelcomeActivePage:WelcomeActivePage,
+  PendingTrip:PendingTrip,
+  Authentication: Authentication,
+  TripAccepted1: TripAccepted1,
+  EditName:EditName,
+  EditEmail: EditEmail,
+  EditPhone: EditPhone,
+  EditPassword: EditPassword, 
+  PostTrip1: PostTrip1,
+  DriverDetails:DriverDetails,
   PostTrip:PostTrip,
   TripDetails2: TripDetails2,
   Landing: Landing,
@@ -150,22 +171,33 @@ const AppStack = createStackNavigator({
   Home: Home, 
   Artist: Artist,
   SignUp: SignUp,
-  Authentication: Authentication,
   IsVerified: IsVerified,
   TripDetails: TripDetails,
   UploadSelfieVerification: UploadSelfieVerification,
   UserVerificationComplete: UserVerificationComplete,
   Riderdetails: Riderdetails,
   UploadIdVerification: UploadIdVerification,
-});
+},
+{
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: '#dfe2ee',
+    },
+    headerTintColor: '#000000',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+  },
+}
+);
 
 
-const ProfileStack = createStackNavigator({ 
-  EditName:EditName,
-  EditEmail: EditEmail,
-  EditPassword: EditPassword,
-  EditPhone: EditPhone, 
-});
+// const ProfileStack = createStackNavigator({ 
+//   EditName:EditName,
+//   EditEmail: EditEmail,
+//   EditPassword: EditPassword,
+//   EditPhone: EditPhone, 
+// });
 
 
 // const DrawerStack = createDrawerNavigator({
@@ -179,7 +211,7 @@ const ProfileStack = createStackNavigator({
 const DrawerNavigatorExample = createDrawerNavigator(
   {
     AppStack: AppStack,
-    ProfileStack:ProfileStack,
+  //  ProfileStack:ProfileStack,
     //Drawer Optons and indexing
     NavScreenProfile: {
       screen: ProfileStackNavigator,

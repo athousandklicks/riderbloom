@@ -5,20 +5,20 @@ import {
     StyleSheet,
     Text,
     View,
-    TextInput,
     TouchableOpacity,
-    Keyboard,
-    Alert,
-    ToastAndroid
-    
+    TextInput
 } from 'react-native';
 
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import AsyncStorage from '@react-native-community/async-storage';
-import CheckBox from '@react-native-community/checkbox';
 
+;
+export default class PostTrip1 extends Component {
 
-export default class PostTrip extends Component {
+    static navigationOptions = {
+        title: 'Post a Trip',
+      };
+
 
     constructor(props) {
         super(props)
@@ -30,9 +30,6 @@ export default class PostTrip extends Component {
           timeWithZeros: '',
           isDateTimePickerVisible: false,
           user_login_id: '',
-          checked: false,
-          textinputtime:'',
-          textinputdate:'',
           
       }
     }
@@ -49,11 +46,9 @@ export default class PostTrip extends Component {
         }
       }
 
-
-
-
     
       componentDidMount () {
+        
         const { navigation } = this.props;
            const userId = navigation.getParam('UserId', 'NO-ID');
            this.setState({ 
@@ -75,63 +70,62 @@ export default class PostTrip extends Component {
       });
     
       _handleDatePicked = (date) => {
+
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+    let time = `${hours}:${minutes}:${seconds}`;
+
         this.setState({ 
           date: date,
-          textinputdate: date.toString().slice(4,15),
-          textinputtime: date.toString().slice(16,24),
+          rawTime: time,
         });
+
+       // this.state.date.JSON.stringify();
+
+      //  console.log('A date has been picked: ', this.state.date.JSON.stringify());
         console.log('A State date has been picked: ', this.state.date);
-
+        console.log('A State Time has been picked: ', this.state.rawTime);
           this._hideDateTimePicker();
+          
       };
+
+      postTrip = () => {
+        let data={}
+          data.user_id=this.state.user_login_id,
+          data.from=this.state.pickup,
+          data.to=this.state.destination,
+          data.trip_date=this.state.date,
+          //data.trip_date=this.state.Time,
+          console.log(data)
       
-    postTrip = () => {
-      let data={}
-        data.user_id=this.state.user_login_id,
-        data.from=this.state.pickup,
-        data.to=this.state.destination,
-        data.trip_date=this.state.date,
-        data.private_trip=this.state.checked,
+        //var url = 'https://example.com/profile';
+        var url = 'http://104.248.254.71/app/public/api/create-trip-request';
+      
+        fetch(url, {
+        method: 'POST', // or 'PUT'
+        body: JSON.stringify(data), // data can be `string` or {object}!
+        headers:{
+          'Content-Type': 'application/json'
+        }
+        }).then(res => res.json())
+        .then(response => {
+          console.log(response.message);
+          console.log(response.trip_details.id)
+          // this.props.navigation.navigate('TripDetails', {tripId: response.trip_details.id});
+           this.props.navigation.navigate('TripAccepted', {tripId: response.trip_details.id});
+            if(response.status == true){
+              // this.props.navigation.navigate('InterDetails');
+            }else{
+              console.log(response.status);
+                console.log(response);
+            }
+        })
+        .catch(error => console.error('Error', error));
+        }
 
-        //data.trip_date=this.state.Time,
-        console.log(data)
-    
-      //var url = 'https://example.com/profile';
-      var url = 'http://104.248.254.71/app/public/api/create-trip-request';
-    
-      fetch(url, {
-      method: 'POST', // or 'PUT'
-      body: JSON.stringify(data), // data can be `string` or {object}!
-      headers:{
-        'Content-Type': 'application/json'
-      }
-      }).then(res => res.json())
-      .then(response => {
-        console.log(response.message);
-        console.log(response.trip_details.id)
-
-         this.props.navigation.navigate('TripDetails', {tripId: response.trip_details.id});
-
-         ToastAndroid.show
-          ('Trip Successfully Created ', ToastAndroid.SHORT);
-      })
-      // .catch(error => console.error('Error', error));
-      .catch(error => ToastAndroid.show
-        ('Trip not Successfully Created ', ToastAndroid.SHORT));
-      }
-
-      changeCheckBoxValue(){
-          this.setState({
-              checked: !this.state.checked,
-          })
-          console.log('checked Value:' + !this.state.checked);
-      }
-
-
-      static navigationOptions = {
-        title: 'Post a Trip',
-      };
-
+        
+        
     render() {
         return (
             <View style={styles.MainContainer}>
@@ -140,49 +134,38 @@ export default class PostTrip extends Component {
                         <TextInput style = {styles.inputBox}
                             placeholder="e.g Abuja"
                             placeholderTextColor="#313233" 
-                            onChangeText={pickup => this.setState({pickup})}
-                                value = {this.state.pickup}
                         />
 
                         <Text style={styles.LabelText}>Destination</Text>
                         <TextInput style = {styles.inputBox}
                             placeholder="e.g Lagos"
                             placeholderTextColor="#313233"  
-                            onChangeText={destination => this.setState({destination})}
-                                value = {this.state.destination}
                         />       
 
-                        {/* <TouchableOpacity onPress={this._showDateTimePicker}> */}
+                        <TouchableOpacity onPress={this._showDateTimePicker}>
                         <View style={styles.TripDateTimeWrapper}>
                         
                                 <View style={styles.TripDate}>
                                 <Text style={styles.LabelText}>Date</Text>
                                     <TextInput style = {styles.inputBox}
-                                    placeholder="Enter Date"
+                                    placeholder="e.g Lagos"
                                     placeholderTextColor="#313233" 
                                     // editable={false} 
-                                    onChange={
-                                        textinputdate => this.setState({textinputdate})}
-                                    value = {this.state.textinputdate}
-                                    onFocus={this._showDateTimePicker}
-                                    
-                                   
+                                    onChange={date => this.setState({date})}
+                                    value = {this.state.date}
                                 /> 
                                 </View>
 
                                 <View style={styles.TripTime}>
                                 <Text style={styles.LabelText}>Time</Text>
                                     <TextInput style = {styles.inputBox}
-                                    placeholder="Time"
+                                    placeholder="e.g Lagos"
                                     placeholderTextColor="#313233" 
-                                    onChange={textinputtime => this.setState({textinputtime})}
-                                    value = {this.state.textinputtime}
                                     editable={false} 
                                 /> 
                                 </View>
                             </View>  
-                            {/* </TouchableOpacity>  */}
-
+                            </TouchableOpacity> 
                             <DateTimePicker
                                             isVisible = {this.state.isDateTimePickerVisible}
                                             onConfirm = {this._handleDatePicked}
@@ -193,18 +176,9 @@ export default class PostTrip extends Component {
                                             is24Hour = {false}
                                  />
 
-                    <View style={styles.CheckBoxWrapper}>
-                        <View>
-                        <CheckBox value = {this.state.checked} 
-                            onChange={()=>this.changeCheckBoxValue()}/>
-                        </View>
-
-                        <View>
-                            <Text style={styles.CheckBoxText}>Private Trip?</Text>
-                        </View>
-                    </View>
-                            
-                    <TouchableOpacity onPress={() => this.postTrip()} style ={styles.button}>
+                           
+                   
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Landing3')} style ={styles.button}>
                         <View style={styles.TripButtonWrapper}>
                             <View style={styles.TripRequestButton}>
                                 <Text style={styles.TripRequestButtonText}>Post a Trip</Text>
@@ -215,7 +189,6 @@ export default class PostTrip extends Component {
             </View>
         );
     }
-
 }
 
 
@@ -271,22 +244,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
          justifyContent: 'space-between',
     },
-
-    
-    CheckBoxWrapper:{
-        flexDirection: 'row',
-        marginTop:20
-    },
-
-    CheckBoxText: {
-        paddingTop:3,
-        paddingLeft:3,
-        color: '#4c4d4e',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        fontSize: 16,
-      },
-
 
 
     TripRequestButton: {

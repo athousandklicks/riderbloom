@@ -44,7 +44,7 @@
         
       <View style={styles.albumContainer}>
         <ScrollView vertical={true}>
-          {/* {
+          {
             this.props.artists.artistList ?
               this.props.artists.artistList.map((item)=>(
                 <TouchableOpacity
@@ -66,7 +66,7 @@
                 </TouchableOpacity>
               ))
             : null
-          } */}
+          }
 
       <Button title='Sign Out' onPress={this._signOutApp} />
           

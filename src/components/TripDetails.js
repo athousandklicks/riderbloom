@@ -8,6 +8,7 @@ import {Platform,
     ImageBackground,
     BackHandler,
     ToastAndroid,
+    Alert,
     TouchableOpacity} from 'react-native';
 
 import { connect } from 'react-redux';
@@ -38,18 +39,35 @@ class TripDetails extends Component {
             console.log('TRIP ID: '+ this.state.trip_id);
              this.props.activeTripDetails(tripId);
      
-             BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+            // BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
          // console.log('');
           }
 
-          componentWillUnmount() {
-            BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-          }
+        //   componentWillUnmount() {
+        //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+        //   }
       
-          handleBackButton() {
-            ToastAndroid.show('Sorry, Cancel the trip before going to post trip again', ToastAndroid.SHORT);
-            return true;
-        }
+        //   handleBackButton() {
+        //     ToastAndroid.show('Sorry, Cancel the trip before going to post trip again', ToastAndroid.SHORT);
+        //     return true;
+        // }
+
+        cancelTripAlert(){
+          Alert.alert(
+            'Exit',
+            'Do You Want to Cancel this trip?',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+              {text: 'OK', onPress: () => this.cancelTrip()},
+            ],
+            {cancelable: false},
+          );
+      
+          }
 
         cancelTrip = () => {
             let data={}
@@ -71,9 +89,11 @@ class TripDetails extends Component {
               console.log(response.trip_details.id)
                this.props.navigation.navigate('Landing');
                 if(response.status == true){
+
                   ToastAndroid.show
                   ('Trip Request has been cancelled successfully', ToastAndroid.SHORT);
-                  this.props.navigation.navigate('Landing');
+                  this.props.navigation.navigate('WelcomePage');
+
                 }else{
                   console.log(response.status);
                     console.log(response);
@@ -82,112 +102,55 @@ class TripDetails extends Component {
             .catch(error => console.error('Error', error));
             }
 
-            static navigationOptions = { header: null, }
-
+            static navigationOptions = {
+                title: 'Trip Details',
+                header: null,
+              };
+             // static navigationOptions = { header: null, };
+    
     render() {
         return (
             <View style={styles.MainContainer}>
-
-        <View style={styles.Header}>
-
-        <View style={styles.TripDetailsContainer}>
-            <View style={styles.TripDetailsHeading}>
-                <Text style={styles.TripDetailsText}>Trip Details</Text>
-            </View>
-        </View> 
-
+              <View style={styles.Title}>
+              <Text style={styles.TitleText}>Trip Details</Text>
+              </View>
         {
             this.props.active_trips.activeTripDetails 
-            ? 
+        ?       
+            <View style={styles.Body}>
+                        <Text style={styles.LabelText}>Pick Up</Text>
+                        <Text style={styles.TripInfoText}>
+                        {this.props.active_trips.activeTripDetails.pick_up}</Text>
+                        
+                        <Text style={styles.LabelText}>Destination</Text>
+                        <Text style={styles.TripInfoText}>
+                        {this.props.active_trips.activeTripDetails.destination}</Text>       
 
-            <View style={styles.TripFromToConatainer}>
+                        <Text style={styles.LabelText}>Date</Text>
+                        <Text style={styles.TripInfoText}>
+                        {this.props.active_trips.activeTripDetails.trip_date.slice(0,10)}</Text>  
 
-                <View style={styles.TripDetailsFrom}>
-                    <Text style={styles.TripFromDestinationTitles}>From</Text>
-                    <Text style={styles.TripFromDestinationText}
-                    >{this.props.active_trips.activeTripDetails.pick_up}</Text>
-                </View>
+                        <Text style={styles.LabelText}>Time</Text>
+                        <Text style={styles.TripInfoText}>
+                        {this.props.active_trips.activeTripDetails.trip_date.slice(12,21)}</Text>  
 
-                <View style={styles.TripDetailsArrow}>
-                    <Text style={styles.ForwardArrow}>>></Text>
-                </View>
-
-                <View style={styles.TripDetailsDestination}>
-                    <Text style={styles.TripToDestinationTitles}>Destination</Text>
-                    <Text style={styles.TripToDestinationText}>
-                    {this.props.active_trips.activeTripDetails.destination}</Text>
-                </View>
-
-            </View> 
-
-            : null
-        }
-    </View>
-
-
-
-    
-    <View style={styles.Body}>
-
-    {
-        this.props.active_trips.activeTripDetails 
-        ?
-
-        <View style={styles.TripDetailsContainer}>
-
-            <View style={styles.TripInfoWrapper}>
-
-                    <View style={styles.TripPickup}>
-                    <Text style={styles.TripInfoTitle}>Pick Up</Text>
-                    <Text style={styles.TripInfoText}>
-                    {this.props.active_trips.activeTripDetails.pick_up}</Text>
-                </View>
-
-                <View style={styles.TripDate}>
-                    <Text style={styles.TripInfoTitle}>Date</Text>
-                    <Text style={styles.TripInfoText}>
-                    {this.props.active_trips.activeTripDetails.trip_date.slice(0,10)} 
-                    </Text>
-                </View>
-                <View style={styles.TripTime}>
-                    <Text style={styles.TripInfoTitle}>Time</Text>
-                    <Text style={styles.TripInfoText}>
-                    {this.props.active_trips.activeTripDetails.trip_date.slice(12,21)}
-                    </Text>
-                </View>
-            </View>
-
-            <View style={styles.TripTagsWrapper}>
-                <View style={styles.TagsMeta}>
-                    <View style={styles.TagTitle}>
-                    <Text style={styles.TripInfoTitle}>Tags</Text>
+                        
+                   
+                    <TouchableOpacity onPress={() => this.cancelTripAlert()} style ={styles.button}>
+                        <View style={styles.TripButtonWrapper}>
+                            <View style={styles.TripRequestButton}>
+                                <Text style={styles.TripRequestButtonText}>Cancel Trip</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
                     </View>
-                    <View style={styles.TagIcon}>
-                    <Text style={styles.TripInfoTitle}>?</Text>
+                    : null
+                }
+                    <View style= {styles.bottom}>
+                        <Image source={require('../img/log.png')}  style={styles.backgroundImage} />
                     </View>
-                </View> 
-
-                <View style={styles.DestinationTagNames}>
-                    <View style={styles.TagDestination}>
-                        <Text style={styles.TripTagText}>Benin</Text>
-                    </View>
-                </View>
-
+                
             </View>
-
-            <TouchableOpacity onPress={() => this.cancelTrip()} style ={styles.button}>
-            <View style={styles.TripButtonWrapper}>
-                <View style={styles.TripRequestButton}>
-                    <Text style={styles.TripRequestButtonText}>Cancel Request</Text>
-                </View>
-            </View>
-            </TouchableOpacity>
-        </View>
-        : null
-    }
-
-    </View>
-</View>
         );
     }
 }
@@ -197,231 +160,96 @@ class TripDetails extends Component {
 const styles = StyleSheet.create({
     MainContainer: {
         flex: 1,
-        backgroundColor: '#3756dc',
+        backgroundColor: '#dfe2ee',
         alignSelf: 'stretch'
     },
 
-    Header:{
-        flex: 1,
-        backgroundColor: '#3756dc',
-        padding: 23
+    Body: {
+        marginLeft: 18,
+        marginRight: 18,
+        marginTop:10
     },
 
-    TripDetailsHeading:{
+    TripInfoText: {
+        fontSize: 22,
+        color: '#12213a',
+        paddingLeft: 15,
+        alignItems: 'center',
+        paddingBottom: 10,
+        fontWeight: 'bold',
+        },
+
+      LabelText:{
+        marginTop:15,
+        paddingLeft: 15,
+      },
+
+      Title:{
+         marginTop:25,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      
+      TitleText:{
+        fontSize: 22,
+        color: '#12213a',
+        fontWeight: 'bold',
+     }, 
+
+
+      TripDateTimeWrapper:{
+        flexDirection: 'row',
+         justifyContent: 'space-between',
+    },
+
+    TripTime: {
+        flex: 1,
+        paddingLeft: 4,
+        borderRadius: 6,
+      },
+
+    TripDate: {
+        flex: 1,
+        paddingRight: 4,
+        borderRadius: 6,
+      },
+
+      TripButtonWrapper:{
+        flexDirection: 'row',
+         justifyContent: 'space-between',
+    },
+
+
+    TripRequestButton: {
+        flex: 1,
+        backgroundColor: '#222a46',
+        padding: 8,
+        borderRadius: 6,
+        marginTop: 30,
+        borderColor: '#bcc0c6',
+        borderStyle: 'solid',
+        borderWidth: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 10,
-    },
-
-    Body:{
-        flex: 4,
-        backgroundColor: '#ffffff',
-        padding: 23,
-        borderTopLeftRadius: 14,
-        borderTopRightRadius: 14
-    },
-
-    TripDetailsText:{
-        color: '#ffffff',
-        fontSize: 16
-    },
-
-    TripFromToConatainer:{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap'
-    },
-
-    TripDetailsFrom:{
-        flex: 1,
-        justifyContent: 'center',
-
-    },
-    TripDetailsDestination:{
-        flex: 1,
-        justifyContent: 'center',
-
-    },
-
-    TripDetailsArrow:{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-
-    TripFromDestinationTitles:{
-        color: '#dfe5ec',
-        fontSize: 12,
-        marginBottom: 5,
-        textAlign: 'left'
-    },
-
-    TripToDestinationTitles:{
-        color: '#dfe5ec',
-        fontSize: 12,
-        marginBottom: 5,
-        textAlign: 'right'
-    },
-
-    TripForwardArrow:{
-        color: '#dfe5ec',  
-    },
-
-    ForwardArrow:{
-        color: '#ffffff',
-    },
-
-    TripFromCityNameToCityName:{
+        height: 55,
         
-    },
+      },
 
-    TripFromDestinationText:{
+    TripCancelButtonText: {
+        color: '#4c4d4e',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        fontSize: 16,
+      },
+
+     TripRequestButtonText: {
         color: '#ffffff',
         fontWeight: 'bold',
+        textAlign: 'center',
         fontSize: 16,
-        textAlign: 'left'
-    },
-
-    TripToDestinationText:{
-        color: '#ffffff',
-        fontWeight: 'bold',
-        fontSize: 16,
-        textAlign: 'right'
-    },
-
-
-    TripDetailsContainer: {
-        alignSelf: 'stretch'
-    },
-
-    TripInfoWrapper:{
-        marginBottom: 10,
-        alignItems: 'flex-start',
-
-    },
-
-    TripInfoTitle:{
-        color: '#000000',
-        fontSize: 12,
-        textAlign: 'left',
-        marginBottom: 1,
-
-    },
-
-    TripInfoText:{
-        color: '#31353a',
-        fontSize: 16,
-        textAlign: 'left',
-        marginBottom: 18,
-    },
-
-    TripInfoTextLastChild:{
-        color: '#31353a',
-        fontSize: 23,
-        textAlign: 'left',
-    },
-
-    TripTagsWrapper:{
-        alignSelf: 'stretch',
-        marginBottom: 18
-    },
-
-    TagsMeta:{
-        flexDirection: 'row',
-        marginBottom: 8
-    },
-
-    TagTitle:{
-        marginRight: 8
-    },
-
-    DestinationTagNames:{
-        flexDirection: 'row',
-    },
-    
-    TagDestination:{
-        borderRadius: 6,
-        backgroundColor: '#3756dc',
-        marginRight: 8,
-        paddingLeft:10,
-        paddingRight:10,
-        paddingTop:5,
-        paddingBottom:6,
-    },
-
-    TripTagText:{
-        color: '#ffffff',
-        fontSize: 16,
-    },
-
-    DriverNoteText:{
-        color: '#000000',
-        fontSize: 13,
-    },
-
-    TripButtonWrapper:{
-      flexDirection: 'row',
-       justifyContent: 'center',
-      alignItems: 'center',
-  },
-
-  TripCancelButton: {
-      flex: 1,
-      backgroundColor: '#ffffff',
-      padding: 8,
-      borderRadius: 6,
-      marginTop: 20,
-      marginLeft: 5,
-      borderColor: '#bcc0c6',
-      borderStyle: 'solid',
-      borderWidth: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-
-  TripRequestButton: {
-      backgroundColor: '#222a46',
-      padding: 8,
-      borderRadius: 6,
-      marginTop: 20,
-      width:200,
-      marginRight: 5,
-      borderColor: '#bcc0c6',
-      borderStyle: 'solid',
-      borderWidth: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-
-    TripRequestButton2: {
-      backgroundColor: '#ffffff',
-      padding: 8,
-      borderRadius: 6,
-      marginTop: 20,
-      width:200,
-      marginRight: 5,
-      borderColor: '#222a46',
-      borderStyle: 'solid',
-      borderWidth: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-
-  TripCancelButtonText: {
-      color: '#4c4d4e',
-      fontWeight: 'bold',
-      textAlign: 'center',
-      fontSize: 16,
-    },
-
-   TripRequestButtonText: {
-      color: '#ffffff',
-      fontWeight: 'bold',
-      textAlign: 'center',
-      fontSize: 16,
-    },
-
+      },
 });
+
 
 function mapStateToProps(state){
   return {

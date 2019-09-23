@@ -2,6 +2,7 @@
 import {
   TRIP_DETAILS,
   GET_ACTIVE_TRIP,
+  GET_RIDE_HISTORY_ALL
 } from '../types';
 
 import axios from 'axios';
@@ -26,6 +27,17 @@ export function getActiveTrip(id){
                   console.log('THIS IS getActiveTrip: '+request);
   return {
       type: GET_ACTIVE_TRIP,
+      payload: request
+  }
+}
+
+export function getRideHistoryAll(id){
+  const request = axios.get(`${URL}/trip-history?user_id=${id}`)
+                  .then( response => response.data );
+                  console.log(JSON.stringify(request));
+
+  return {
+      type: GET_RIDE_HISTORY_ALL,
       payload: request
   }
 }

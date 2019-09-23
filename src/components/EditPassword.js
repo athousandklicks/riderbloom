@@ -7,7 +7,8 @@ import {Platform,
     TouchableOpacity, 
     Image, 
     ImageBackground, 
-    TextInput} from 'react-native';
+    TextInput,
+    ToastAndroid} from 'react-native';
     import AsyncStorage from '@react-native-community/async-storage';
 
 const EMAIL = 'email';
@@ -33,26 +34,6 @@ export default class EditEmail extends Component {
     console.log('TRIP ID: '+ this.state.user_id);
   }
 
-
-  removeValue = async () => {
-    try {
-      await AsyncStorage.removeItem('email');
-      console.log('User email Removed successfull');
-    } catch(e) {
-      // remove error
-    }
-    console.log('Done.')
-  }
-
-
-  async updateUserEmail(email) {
-    try {
-        await AsyncStorage.setItem(EMAIL, email);
-        console.log('User name stored successfull');
-    } catch (error) {
-        console.log('Something went wrong');
-    }
-  }
  
   async updatePassword (){
     let data = {};
@@ -73,6 +54,10 @@ export default class EditEmail extends Component {
     .then(response => {
         if (response.status === true){
           console.log('Password Updated Successfully');
+          ToastAndroid.show
+          ('Password Successfully Updated ', ToastAndroid.SHORT);
+
+          this.props.navigation.goBack();
         } else {
             console.log('Error');
         }
@@ -80,133 +65,116 @@ export default class EditEmail extends Component {
     .catch(error => console.error('Error', error));
   }
 
-   
+  static navigationOptions = {
+    title: 'Update Password',
+  };
       render() {
         return (
-      <View style={styles.container}>
-    
-          <View style={styles.top}>
-        
-                 <Text style={styles.secondHeaderText}>Update Email</Text>
-          </View>
-    
-          <View style= {styles.center}>
-          <View style={styles.container}>
-            <TextInput style = {styles.inputBox}
-              placeholder="Enter New Password"
-              secureTextEntry={true}
-              placeholderTextColor="#313233"
-                onChangeText={password => this.setState({password})}
-                value = {this.state.password}
-              />
 
-          <TouchableOpacity 
-                onPress={() => this.updatePassword()} 
-                style ={styles.button}>
-               <Text style= {styles.buttonText}>Update Password</Text>
-             </TouchableOpacity>
- 
-          </View>
-    
-          <View style= {styles.bottom}>
-               <Image source={require('../img/log.png')}  style={styles.backgroundImage} />
-          </View>
-      </View>
-      </View>
+          <View style={styles.MainContainer}>
+                    <View style={styles.Body}>
+                        <TextInput style = {styles.inputBox}
+                            placeholder="Enter New Password"
+                            secureTextEntry={true}
+                            placeholderTextColor="#313233"
+                              onChangeText={password => this.setState({password})}
+                              value = {this.state.password}
+                        />
+
+                            <TouchableOpacity onPress={() => this.updatePassword()} style ={styles.button}>
+                                <View style={styles.TripButtonWrapper}>
+                                    <View style={styles.TripRequestButton}>
+                                        <Text style={styles.TripRequestButtonText}>Save</Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                            </View>
+
+                            <View style= {styles.bottom}>
+                                <Image source={require('../img/log.png')}  style={styles.backgroundImage} />
+                            </View>
+
+                        
+                    </View>
+
         );
       }
 }
 
-const styles = StyleSheet.create({
-    container: {
-      flexGrow: 1,
-      backgroundColor:'white'
-    },
-    form : {
-      flexGrow: 1,
-     borderRadius: 15,
-      backgroundColor:'white',
-      margin: 0,
-      paddingBottom: 40,
-    },
-    inputBox: {
-      alignSelf: 'stretch',
-      margin: 15,
-      height: 40,
-      borderBottomColor: 'black',
-      borderBottomWidth: 1,
-      fontSize: 18,
-        width: 270,
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingLeft: 40
-    },
-    forgotPassword: {
-      color: 'blue',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginLeft: 100,
-      textAlign: 'right'
-    },
-    top: {
-      height: '35%',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: 40
-    },
-    center: {
-      height: '45%',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    bottom: {
-      height: '10%',
-    },
-    headerText:{
-    fontSize: 20,
-    color: '#12213a',
-    marginVertical: 10,
-    alignItems: 'center',
-    fontWeight: '900',
-    paddingTop: 80,
-  },
-    secondHeaderText: {
-    fontSize: 15,
-    color: '#2e2f30',
-    marginVertical: 5,
-    alignItems: 'center',
-    paddingBottom: 60
-     },
-     button: {
-      width: 270,
 
-      backgroundColor: '#12213a',
-      marginVertical:20,
-      marginBottom:30,
-      paddingVertical: 15
+
+  const styles = StyleSheet.create({
+    MainContainer: {
+    flex: 1,
+    backgroundColor: '#dfe2ee',
+    alignSelf: 'stretch'
     },
-    buttonText: {
-      fontSize: 16,
-      fontWeight: '800',
-      color: 'white',
-      textAlign: 'center'
+    
+    Body: {
+      marginLeft: 18,
+      marginRight: 18,
+      marginTop:10,
+      flex: 3,
     },
-    signUpText: {
-      flexGrow: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: 30,
-      flexDirection: 'row',
-      paddingBottom: 20
+
+    bottom: {
+      flex: 1,
     },
-    signUp:{
-      fontSize: 15,
-      color: 'black',
-        fontWeight: '700'
+    
+    inputBox: {
+    alignSelf: 'stretch',
+    height: 55,
+    borderRadius:8,
+    fontSize: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingLeft: 20,
+    paddingRight: 20,
+    backgroundColor: '#ffffff',
+    marginTop:10,
     },
-    logInButton: {
-      fontWeight: '900',
-      fontSize: 16,
-      color: 'blue'
+    
+    LabelText:{
+    marginTop:20,
+    fontWeight:'bold',
     },
-  });
+    TripButtonWrapper:{
+    flexDirection: 'row',
+     justifyContent: 'space-between',
+    },
+    
+    
+    TripRequestButton: {
+    flex: 1,
+    backgroundColor: '#222a46',
+    padding: 8,
+    borderRadius: 6,
+    marginTop: 30,
+    borderColor: '#bcc0c6',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 55,
+    
+    },
+    
+    TripCancelButtonText: {
+    color: '#4c4d4e',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 20,
+    },
+    
+    TripRequestButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 20,
+    },
+
+    
+    });
+
+
+    
