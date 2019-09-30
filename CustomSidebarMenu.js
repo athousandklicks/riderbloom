@@ -4,15 +4,18 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, Text } from 'react-native';
 import { Icon } from 'react-native-elements';
+
+import AsyncStorage from '@react-native-community/async-storage';
  
 export default class CustomSidebarMenu extends Component {
   constructor() {
     super();
+    
     //Setting up the Main Top Large Image of the Custom Sidebar
     // this.proileImage =
     //   'https://aboutreact.com/wp-content/uploads/2018/07/sample_img.png';
 
-    this.proileImage = './avatar.png';
+    //this.proileImage = './avatar.png';
 
       
     //Array of the sidebar navigation option with icon and screen to navigate
@@ -20,30 +23,73 @@ export default class CustomSidebarMenu extends Component {
     //You can find the Icons from here https://material.io/tools/icons/
     this.items = [
       {
-        navOptionThumb: 'camera',
+        navOptionThumb: 'person',
         navOptionName: 'Profile',
         screenToNavigate: 'NavScreenProfile',
       },
       {
-        navOptionThumb: 'image',
+        navOptionThumb: 'history',
         navOptionName: 'Ride History',
         screenToNavigate: 'NavScreenRideHistory',
       },
       {
-        navOptionThumb: 'build',
-        navOptionName: 'Third Screen',
-        screenToNavigate: 'NavScreen3',
+        navOptionThumb: 'settings',
+        navOptionName: 'Settings',
+        screenToNavigate: 'SettingsScreen',
       },
     ];
+
+    this.state = {
+      fname: '',
+      lname: '',
+      phone:'',
+      email:'',
+      user_Id: null,
+     
+        }
+      }
+  
+
+
+  getDetails = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('user_id');
+      const fname = await AsyncStorage.getItem('first_name');
+      const phone = await AsyncStorage.getItem('phone_number');
+      const email = await AsyncStorage.getItem('email');
+
+      this.setState({ 
+        fname: fname,
+        phone: phone,
+        email: email,
+        user_Id: userId,
+
+      });
+
+    } catch (e) {
+      this.props.navigation.navigate('Auth');
+    }
   }
+
+  componentDidMount(){
+    this.getDetails();
+  } 
+
   render() {
     return (
       <View style={styles.sideMenuContainer}>
-        {/*Top Large Image */}
-        <Image
+      
+        {/* <Image
           source={{ uri: this.proileImage }}
           style={styles.sideMenuProfileIcon}
-        />
+        /> */}
+
+
+
+        <Icon name='account-circle' size={90} color="#808080" />
+        <Text style={styles.smallText}>{this.state.fname}</Text>
+
+
         {/*Divider between Top Image and Sidebar Option*/}
         <View
           style={{
@@ -60,9 +106,9 @@ export default class CustomSidebarMenu extends Component {
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                paddingTop: 10,
-                paddingBottom: 10,
-                backgroundColor: global.currentScreenIndex === key ? '#e0dbdb' : '#ffffff',
+                paddingTop: 14,
+                paddingBottom: 14,
+                backgroundColor: global.currentScreenIndex === key ? '#232a46' : '#ffffff',
               }}
               key={key}>
               <View style={{ marginRight: 10, marginLeft: 20 }}>
@@ -70,8 +116,8 @@ export default class CustomSidebarMenu extends Component {
               </View>
               <Text
                 style={{
-                  fontSize: 15,
-                  color: global.currentScreenIndex === key ? 'red' : 'black',
+                  fontSize: 20,
+                  color: global.currentScreenIndex === key ? '#ffffff' : 'black',
                 }}
                 onPress={() => {
                   global.currentScreenIndex = key;
@@ -90,7 +136,7 @@ const styles = StyleSheet.create({
   sideMenuContainer: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     paddingTop: 20,
   },
@@ -101,4 +147,16 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 120 / 2,
   },
+
+  CircleShapeView: {
+    width: 110,
+    height: 110,
+    borderRadius: 110/2,
+    backgroundColor: '#a7a7a7',
+  
+  },
+
+  smallText:{
+    fontSize:18
+  }
 });

@@ -6,17 +6,75 @@ import {Platform,
   View, 
   ImageBackground, 
   Image, 
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
+import AsyncStorage from '@react-native-community/async-storage';
+
+import { Icon } from 'react-native-elements';
 
 
 export default class UploadSelfieVerification extends Component {
 
   state ={
-    avatar : '',
-    upload_file: {}
+    avatar : null,
+    upload_file: {},
+    userId:'',
+    isLoading: false,
   }
+
+  ShowHideActivityIndicator = () =>{
+    if(this.state.isLoading == true)
+    {
+      this.setState({isLoading: false})
+    }
+    else
+    {
+      this.setState({isLoading: true})
+    }
+  }
+
+  // getDetails = async () => {
+  //   try {
+  //     const userId = await AsyncStorage.getItem('user_id');
+  //     console.log('UploadIdVerification.js User ID:' + userId);
+  //     this.setState({ 
+  //       userId: userId,
+  //     });
+  
+  //   } catch (e) {
+  //    // this.props.navigation.navigate('Auth');
+  //   }
+  // }
+
+  
+
+  setIsLoggedIn = async () => {
+    try {
+        await AsyncStorage.setItem('isLoggedIn', '1' );
+        console.log('setIsLoggedIn stored successfull');
+    } catch (e) {
+    }
+  }
+
+  componentDidMount(){
+    const { navigation } = this.props;
+            const user_Id = navigation.getParam('userId', 'NO-ID');
+            this.setState({ 
+              userId: user_Id, 
+           });
+    //this.getDetails();
+    }
+
+    setIsSelfieVerified = async () => {
+      try {
+          await AsyncStorage.setItem('selfieVerified', '1' );
+          console.log('Selfie verified successfull');
+      } catch (e) {
+      }
+    }
+  
 
   addAvatar = () => {
     ImagePicker.launchCamera({}, response=>{
@@ -36,10 +94,10 @@ export default class UploadSelfieVerification extends Component {
   }
 
   _handlePress = () => {
-
+    this.ShowHideActivityIndicator();
 const body = new FormData();
 
-body.append('user_id',1);
+body.append('user_id', this.state.userId);
 body.append('document_title','photo');
 body.append('upload_file',{
   uri:this.state.avatar,
@@ -58,12 +116,11 @@ body: body, // data can be `string` or {object}!
 }).then(res => res.json())
 .then(response => {
 
-  console.log(response);
-
-  this.props.navigation.navigate('UserVerificationComplete');
-
   if(response.status == true){
-
+    this.ShowHideActivityIndicator();
+    this.setIsLoggedIn();
+    this.setIsSelfieVerified();
+      this.props.navigation.navigate('UserVerificationComplete', {userId: this.state.user_id});
      console.log(response.message);
      console.log(response.status)
     // this.props.navigation.navigate('InterDetails');
@@ -79,16 +136,12 @@ body: body, // data can be `string` or {object}!
   static navigationOptions = { header: null, };
   render(){
     return (
-      <ImageBackground source={require('../img/map.jpg')} style={styles.container}>
+      <ImageBackground source={require('../img/new_map.png')} style={styles.container}>
       <View style={styles.menuItems}>
-            <Image
-             source={require('../img/menu.png')}
-            style={styles.menu}
-            />
-            <Image
-             source={require('../img/bell.png')}
-            style={styles.bell}
-            />
+      {
+          // Here the ? Question Mark represent the ternary operator.   
+        this.state.isLoading ?  <ActivityIndicator style={styles.ActivityIndicatorStyle} /> : null
+      }
         </View>
         <View style= {styles.center}>
             <View style={styles.SquareShapeView}>
@@ -100,14 +153,32 @@ body: body, // data can be `string` or {object}!
                 />
                 </TouchableOpacity>
 
-                  <Text style={styles.firstText}>And finally...</Text>
+                  {
+                  this.state.avatar !== null 
+                  ?
+                  <Text style={styles.accountText}>Please click on the button below to
+                   upload Selfie!
+                 </Text>
+                  :
+                  <Text style={styles.accountText}>Please tap on the camera Icon 
+                  below to take a Selfie</Text>
+                }
 
-                <Text style={styles.accountText}>Please take a selfie and
-                dont forget too smile</Text>
-
-                <TouchableOpacity style ={styles.button} onPress={() => this._handlePress()} >
-                  <Text style= {styles.buttonText}> Upload Selfie </Text>
+                {
+                  this.state.avatar !== null 
+                  ? 
+                  <TouchableOpacity style ={styles.button2} 
+                  onPress={() => this._handlePress()}>
+                    <Icon name='cloud-upload' size={65} color="#232a46" />
+                    <Text style= {styles.smallText}> Upload photo </Text>
+                  </TouchableOpacity>
+                  :
+                  <TouchableOpacity style ={styles.button2} 
+                    onPress={() => this.addAvatar()}>
+                  <Icon name='camera' size={65} color="#232a46" />
+                  <Text style={styles.smallText}>Take a Selfie</Text>
                 </TouchableOpacity>
+                }
 
             </View>
           </View>
@@ -134,6 +205,12 @@ const styles = StyleSheet.create({
      marginBottom: 90,
      flexDirection: 'row',
    },
+
+   ActivityIndicatorStyle:{
+    paddingTop:50
+  },
+
+
    menu : {
      height: 20,
      marginRight: 300,
@@ -178,10 +255,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   boy:{
-    width: 80,
-    height: 80,
+    width: 180,
+    height: 100,
     marginTop: 40,
-    marginLeft: 100
+    marginLeft: 60,
   },
   accountText: {
      fontSize: 15,
@@ -204,6 +281,16 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     paddingVertical: 10,
     marginLeft: 90
+  },
+
+  smallText:{
+    fontSize: 10,
+    textAlign: 'center'
+  },
+
+
+  button2: {
+    marginTop: 40,
   },
   buttonText: {
     fontSize: 16,

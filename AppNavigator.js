@@ -22,11 +22,6 @@ import { createStackNavigator } from 'react-navigation-stack';
 
   import AsyncStorage from '@react-native-community/async-storage';
 
-
-  //Import all the screens
-import Screen1 from './src/components/Screen1';
-import Screen2 from './src/components/Screen2';
-import Screen3 from './src/components/Screen3';
  
 //Import Custom Sidebar
 import CustomSidebarMenu from './CustomSidebarMenu';
@@ -34,12 +29,9 @@ import CustomSidebarMenu from './CustomSidebarMenu';
 global.currentScreenIndex = 0;
 
 
-  import Home from './src/components/Home';
-  import Artist from './src/components/Artist';
   import RiderLogin from './src/components/RiderLogin';
   import SignUp from './src/components/SignUp';
   import Authentication from './src/components/Authentication';
-  import IsVerified from './src/components/IsVerified';
   import PostTrip from './src/components/PostTrip';
  import TripDetails from './src/components/TripDetails';
   import UploadIdVerification from './src/components/UploadIdVerification';
@@ -57,19 +49,20 @@ global.currentScreenIndex = 0;
   import EditPhone from './src/components/EditPhone';
 
 
-  import TripDetails2 from './src/components/TripDetails2';
-
   import TripAccepted from './src/components/TripAccepted';
   import DriverDetails from './src/components/DriverDetails';
 
-  import PostTrip1 from './src/components/PostTrip1';
-  import TripAccepted1 from './src/components/TripAccepted1';
 
   import PendingTrip from './src/components/PendingTrip';
   import WelcomePage from './src/components/WelcomePage';
   import WelcomeActivePage from './src/components/WelcomeActivePage';
-
-  import Landing4 from './src/components/Landing4';
+  import Settings from './src/components/Settings';
+  import LoadingSpinner from './src/components/LoadingSpinner';
+  import NextOfKin from './src/components/NextOfKin';
+  import Rating from './src/components/Rating';
+  import ForgotPassword from './src/components/ForgotPassword';
+  
+import { Icon } from 'react-native-vector-icons/Ionicons';
   
 
   
@@ -105,9 +98,9 @@ const ProfileStackNavigator = createStackNavigator({
       title: 'Profile',
       headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
       headerStyle: {
-        backgroundColor: '#FF9800',
+        backgroundColor: '#ffffff',
       },
-      headerTintColor: '#fff',
+      headerTintColor: '#000000',
     }),
   },
 });
@@ -122,61 +115,119 @@ const RideHistory_StackNavigator = createStackNavigator({
       headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
  
       headerStyle: {
-        backgroundColor: '#FF9800',
+        backgroundColor: '#ffffff',
       },
-      headerTintColor: '#fff',
+      headerTintColor: '#000000',
     }),
   },
 });
  
 //Stack Navigator for the Third Option of Navigation Drawer
-const Screen3_StackNavigator = createStackNavigator({
+const Settings_StackNavigator = createStackNavigator({
   //All the screen from the Third Option will be indexed here
   Third: {
-    screen: Screen3,
+    screen: Settings,
     navigationOptions: ({ navigation }) => ({
-      title: 'Demo Screen 3',
+      title: 'Settings',
       headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
       headerStyle: {
-        backgroundColor: '#FF9800',
+        backgroundColor: '#fffff',
       },
-      headerTintColor: '#fff',
+      headerTintColor: '#000000',
     }),
   },
 });
- 
+
+
+// const Welcome_StackNavigator = createStackNavigator({
+//   //All the screen from the Third Option will be indexed here
+//   Fourth: {
+//     screen: WelcomePage,
+//     navigationOptions: ({ navigation }) => ({
+//       title: 'Settings',
+//       headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+//       headerStyle: {
+//         backgroundColor: '#fffff',
+//       },
+//       headerTintColor: '#000000',
+//     }),
+//   },
+// });
+
+
+
 
 const AuthStack = createStackNavigator({ 
-  RiderLogin: RiderLogin 
+  RiderLogin: RiderLogin,
+  ForgotPassword:ForgotPassword
+
 });
 
+// const WelcomePageNavigator = createStackNavigator(
+  
+//   {
+//     WelcomePage:WelcomePage,
+//   },
+
+//   {
+//   defaultNavigationOptions:({navigation}) => {
+//     return({
+//       headerStyle:{
+//         backgroundColor: '#000000',
+//       },
+
+//       headerTitle: 'Home',
+//       headerTintColor: '#ffffff',
+//       headerTitleStyle:{
+//         fontWeight: 'bold',
+//         textAlign: 'center',
+//         flex:1
+//       },
+
+//       headerLeft:(
+//         <Icon
+//         style = {{
+//           paddingLeft:10, 
+//           color:'#ffffff'}}
+
+//         onPress = {()=>navigation.DrawerNavigatorExample()}
+//         name = "md-menu"
+//         size = {30}
+//         />
+//     ),
+
+//     headerRight:(
+//       <View/>
+//     ),
+    
+//     })
+//   }
+// }
+// )
+
 const AppStack = createStackNavigator({ 
-   Splash:Splash,
+  Splash:Splash,
+  Rating: Rating,
+  
+  SignUp: SignUp,
   WelcomePage:WelcomePage,
- 
   WelcomeActivePage:WelcomeActivePage,
+  LoadingSpinner:LoadingSpinner,
   PendingTrip:PendingTrip,
   Authentication: Authentication,
-  TripAccepted1: TripAccepted1,
   EditName:EditName,
   EditEmail: EditEmail,
   EditPhone: EditPhone,
   EditPassword: EditPassword, 
-  PostTrip1: PostTrip1,
   DriverDetails:DriverDetails,
   PostTrip:PostTrip,
-  TripDetails2: TripDetails2,
-  Landing: Landing,
   TripAccepted: TripAccepted,
-  Home: Home, 
-  Artist: Artist,
-  SignUp: SignUp,
-  IsVerified: IsVerified,
   TripDetails: TripDetails,
-  UploadSelfieVerification: UploadSelfieVerification,
   UserVerificationComplete: UserVerificationComplete,
-  Riderdetails: Riderdetails,
+  UploadSelfieVerification: UploadSelfieVerification,
   UploadIdVerification: UploadIdVerification,
+  Riderdetails: Riderdetails,
+  NextOfKin:NextOfKin,
 },
 {
   defaultNavigationOptions: {
@@ -191,28 +242,11 @@ const AppStack = createStackNavigator({
 }
 );
 
-
-// const ProfileStack = createStackNavigator({ 
-//   EditName:EditName,
-//   EditEmail: EditEmail,
-//   EditPassword: EditPassword,
-//   EditPhone: EditPhone, 
-// });
-
-
-// const DrawerStack = createDrawerNavigator({
-//   AppStack: AppStack,
-//   Profile: Profile,
-//   RideHistory: RideHistory,
-//   Home: Home,
-// });
-
 //Drawer Navigator Which will provide the structure of our App
 const DrawerNavigatorExample = createDrawerNavigator(
   {
     AppStack: AppStack,
-  //  ProfileStack:ProfileStack,
-    //Drawer Optons and indexing
+    
     NavScreenProfile: {
       screen: ProfileStackNavigator,
       navigationOptions: {
@@ -225,10 +259,10 @@ const DrawerNavigatorExample = createDrawerNavigator(
         drawerLabel: 'Ride Hostory',
       },
     },
-    NavScreen3: {
-      screen: Screen3_StackNavigator,
+    SettingsScreen: {
+      screen: Settings_StackNavigator,
       navigationOptions: {
-        drawerLabel: 'Demo Screen 3',
+        drawerLabel: 'Settings',
       },
     },
   },
@@ -236,9 +270,11 @@ const DrawerNavigatorExample = createDrawerNavigator(
     //For the Custom sidebar menu we have to provide our CustomSidebarMenu
     contentComponent: CustomSidebarMenu,
     //Sidebar width
-    drawerWidth: Dimensions.get('window').width - 130,
+    drawerWidth: Dimensions.get('window').width - 60,
   }
 );
+ 
+
 
 
   class AuthLoadingScreen extends Component {

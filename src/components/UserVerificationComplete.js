@@ -9,38 +9,52 @@ import {Platform,
   TouchableOpacity
 } from 'react-native';
 
+import { Icon } from 'react-native-elements';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class UserVerificationComplete extends Component {
+
+  state ={
+    userId:'',
+  }
+
+  componentDidMount(){
+    const { navigation } = this.props;
+            const user_Id = navigation.getParam('userId', 'NO-ID');
+            this.setState({ 
+              userId: user_Id, 
+           });
+    //this.getDetails();
+    }
+
 
   static navigationOptions = { header: null, };
   render(){
     return (
-      <ImageBackground source={require('../img/map.jpg')} style={styles.container}>
+      <ImageBackground source={require('../img/new_map.png')} style={styles.container}>
       <View style={styles.menuItems}>
-            <Image
-             source={require('../img/menu.png')}
-            style={styles.menu}
-            />
-            <Image
-             source={require('../img/bell.png')}
-            style={styles.bell}
-            />
+    
         </View>
         <View style= {styles.center}>
             <View style={styles.SquareShapeView}>
 
-                <Image
+                {/* <Image
                  source={require('../img/check.png')}
                 style={styles.boy}
-                />
+                /> */}
 
-                  <Text style={styles.firstText}> Thank You </Text>
+                <View style={styles.boy}>
+                  <Icon name='done-all' size={65} color="#232a46"/>
+                </View>
+                
+                  <Text style={styles.firstText}> All Done, Thank You </Text>
 
                 <Text style={styles.accountText}>Please be patient while we begin your verification process.
                  You will be contacted shortly.</Text>
 
-                <TouchableOpacity style ={styles.button} onPress={()=> this.props.navigation.navigate('Landing')}>
-                  <Text style= {styles.buttonText}> Done </Text>
+                <TouchableOpacity style ={styles.button} 
+                onPress={()=> this.props.navigation.navigate('Splash')}>
+                  <Text style= {styles.buttonText}> Close </Text>
                 </TouchableOpacity>
 
             </View>
@@ -63,6 +77,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  
   menuItems: {
      height: '10%',
      marginBottom: 90,
@@ -115,20 +131,21 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     marginTop: 40,
-    marginLeft: 110,
+    marginLeft: 120,
   },
   accountText: {
      fontSize: 15,
      marginRight: 40,
-     marginLeft: 50,
+     marginLeft: 40,
      marginTop: 20,
      color: 'black',
+     textAlign: 'center'
   },
   firstText: {
-    fontSize: 18,
+    fontSize: 10,
     marginRight: 30,
     marginLeft: 90,
-    marginTop: 20,
+    marginTop: 5,
     fontWeight: 'bold',
     color: 'black'
   },

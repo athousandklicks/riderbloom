@@ -9,15 +9,25 @@ import {
     TouchableOpacity,
     Keyboard,
     Alert,
-    ToastAndroid
-    
+    ToastAndroid,
+    ActivityIndicator
 } from 'react-native';
 
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from '@react-native-community/checkbox';
 
+import { NavigationActions } from 'react-navigation';
 
+// const resetAction = NavigationActions.reset({
+//   index: 0,
+//   actions: [
+//     NavigationActions.navigate({
+//       routeName: "TripDetails",
+//       params: { tripId}
+//     })
+//   ]
+// });
 export default class PostTrip extends Component {
 
     constructor(props) {
@@ -33,7 +43,18 @@ export default class PostTrip extends Component {
           checked: false,
           textinputtime:'',
           textinputdate:'',
-          
+          isLoading: false
+      }
+    }
+
+    ShowHideActivityIndicator = () =>{
+      if(this.state.isLoading == true)
+      {
+        this.setState({isLoading: false})
+      }
+      else
+      {
+        this.setState({isLoading: true})
       }
     }
 
@@ -93,8 +114,12 @@ export default class PostTrip extends Component {
         data.trip_date=this.state.date,
         data.private_trip=this.state.checked,
 
+        this.ShowHideActivityIndicator();
         //data.trip_date=this.state.Time,
-        console.log(data)
+        console.log(data);
+        console.log('Date Year: '+data.trip_date.getFullYear());
+        console.log('Date Month: '+data.trip_date.getMonth());
+        console.log('Date Time: '+data.trip_date.getFullYear());
     
       //var url = 'https://example.com/profile';
       var url = 'http://104.248.254.71/app/public/api/create-trip-request';
@@ -109,7 +134,7 @@ export default class PostTrip extends Component {
       .then(response => {
         console.log(response.message);
         console.log(response.trip_details.id)
-
+        this.ShowHideActivityIndicator();
          this.props.navigation.navigate('TripDetails', {tripId: response.trip_details.id});
 
          ToastAndroid.show
@@ -135,6 +160,7 @@ export default class PostTrip extends Component {
     render() {
         return (
             <View style={styles.MainContainer}>
+       
             <View style={styles.Body}>
                         <Text style={styles.LabelText}>Pick Up</Text>
                         <TextInput style = {styles.inputBox}
@@ -212,6 +238,13 @@ export default class PostTrip extends Component {
                         </View>
                     </TouchableOpacity>
                 </View>
+
+                {  
+                  this.state.isLoading ?  
+                  <ActivityIndicator style={styles.ActivityIndicatorStyle} /> 
+                  : null
+                }
+                
             </View>
         );
     }
@@ -316,5 +349,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         fontSize: 16,
+      },
+
+      ActivityIndicatorStyle:{
+        paddingTop:20
       },
 });

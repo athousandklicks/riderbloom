@@ -17,6 +17,8 @@ import { bindActionCreators } from 'redux';
 
 import AsyncStorage from '@react-native-community/async-storage';
 
+import { Icon } from 'react-native-elements';
+
 export default class RideHistory extends Component {
 
   constructor(props){
@@ -31,8 +33,18 @@ export default class RideHistory extends Component {
          user_Id: null,
          dataSource:[],
          loading: true,
+         Default_Rating: 3,
+         Max_Rating: 5,
       }
+
+      this.Star = 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/star_filled.png';
+      this.Star_With_Border = 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/star_corner.png';
+      
     }
+
+    UpdateRating(key) {
+      this.setState({ Default_Rating: key});
+  }
 
     async componentDidMount() {
  
@@ -41,8 +53,8 @@ export default class RideHistory extends Component {
           console.log('USER ID FROM ASYNC: ', userId);
 
         
-          
-          return fetch(`http://104.248.254.71/app/public/api/trip-history?user_id=1`)
+         return fetch(`http://104.248.254.71/app/public/api/trip-history?user_id=${userId}`)
+          //return fetch(`http://104.248.254.71/app/public/api/trip-history?user_id=1`)
          .then ((res) => res.json())
          .then(response => {
              if(response.status == true){
@@ -142,6 +154,31 @@ export default class RideHistory extends Component {
   // }
 
   render() {
+
+    {
+      let React_Native_Rating_Bar = [];
+        let rating_meaning = '';
+
+        //Array to hold the filled or empty Stars
+        for (var i = 1; i <= this.state.Max_Rating; i++) {
+          React_Native_Rating_Bar.push(
+            <TouchableOpacity
+              activeOpacity={0.7}
+              key={i}
+              onPress={this.UpdateRating.bind(this, i)}>
+              <Image
+                style={styles.StarImage}
+                source={
+                  i <= this.state.Default_Rating
+                    ? { uri: this.Star }
+                    : { uri: this.Star_With_Border }
+                }
+              />
+            </TouchableOpacity>
+          );
+        }
+
+    
     return(
     <View style={styles.container}>
         <FlatList
@@ -149,29 +186,31 @@ export default class RideHistory extends Component {
           renderItem={({item})=> 
 
           <View style={styles.rectangleShape}>
-
-
            <View style={styles.row}>
                 <View style = {styles.firstRow}>
                     <View style={styles.info1}>
-                      <Image
+                    <Icon name='person-pin' size={20} color="#808080" />
+                      {/* <Image
                           source={require('../img/mapmarker-icon.png')}              
-                      />
+                      /> */}
                     </View>
                     <View style={styles.info2}>
                       <Text style={styles.mapText}> {item.from} </Text>
                     </View>
                     <View style={styles.info3}>
-                      <Text style={styles.mapDate}> {item.trip_date} </Text>
+                      <Text style={styles.mapDate}> 
+                      {item.trip_date} | 
+                      {item.start_time.toString().slice(0,5)} </Text>
                     </View>
                 </View>
           
              <View style={styles.secondRow}>
                   <View style={styles.info1}>
-                      <Image
+                  <Icon name='near-me' size={20} color="#73acf9" />
+                      {/* <Image
                           source={require('../img/destination.png')}
                           style={styles.map}
-                      />
+                      /> */}
                   </View>
                   <View style={styles.info2}>
                       <Text style={styles.mapText}> {item.destination}  </Text>
@@ -187,7 +226,8 @@ export default class RideHistory extends Component {
           keyExtractor={item=>item.id.toString()}
         />
     </View>
-    )
+    );
+        }
   }
 }
 
@@ -237,29 +277,28 @@ secondRow: {
 
 info1: {
     flex: 1,
-  
-    paddingTop: 8,
-    paddingBottom: 4,
+    paddingTop: 10,
+    paddingBottom: 6,
     justifyContent: 'center',
     alignItems: 'center',
 },
 
 info2: {
   flex: 4,
-  
-    paddingTop: 8,
-    paddingBottom: 4,
+    paddingTop: 10,
+    paddingBottom: 10,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    paddingLeft:1
 },
 
 info3: {
-  flex: 3,
+  flex: 5,
+  paddingTop: 10,
+  paddingBottom: 10,
+  alignItems: 'flex-end',
+  paddingRight:10,
 
-    paddingTop: 8,
-    paddingBottom: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
 },
 
 imagemap: {

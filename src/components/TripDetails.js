@@ -9,7 +9,9 @@ import {Platform,
     BackHandler,
     ToastAndroid,
     Alert,
-    TouchableOpacity} from 'react-native';
+    TouchableOpacity,
+    ActivityIndicator
+  } from 'react-native';
 
 import { connect } from 'react-redux';
 import { activeTripDetails} from '../store/actions';
@@ -26,31 +28,39 @@ class TripDetails extends Component {
          pickup_time:'',
          pickup_date:'',
          trip_id:'',
+         isLoading: false
            }
          }
+
+         ShowHideActivityIndicator = () =>{
+          if(this.state.isLoading == true)
+          {
+            this.setState({isLoading: false})
+          }
+          else
+          {
+            this.setState({isLoading: true})
+          }
+        }
+
+        //  componentWillMount(){
+        //   BackHandler.addEventListener('hardwareBackPress', function() {
+        //     return true;
+        //   });
+        //  }
 
          componentDidMount () {
             const { navigation } = this.props;
             const tripId = navigation.getParam('tripId', 'NO-ID');
-            this.setState({ 
-             trip_id: tripId, 
-           });
-            console.log('TRIP ID: '+ tripId);
-            console.log('TRIP ID: '+ this.state.trip_id);
-             this.props.activeTripDetails(tripId);
-     
-            // BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-         // console.log('');
-          }
 
-        //   componentWillUnmount() {
-        //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-        //   }
-      
-        //   handleBackButton() {
-        //     ToastAndroid.show('Sorry, Cancel the trip before going to post trip again', ToastAndroid.SHORT);
-        //     return true;
-        // }
+            this.setState({ 
+              trip_id: tripId, 
+           });
+
+            console.log('TRIP ID: '+ tripId);
+            console.log('STATE TRIP ID: '+ this.state.trip_id);
+             this.props.activeTripDetails(tripId);
+          }
 
         cancelTripAlert(){
           Alert.alert(
@@ -72,6 +82,7 @@ class TripDetails extends Component {
         cancelTrip = () => {
             let data={}
               data.trip_id = this.state.trip_id
+              this.ShowHideActivityIndicator();
       
               console.log('CANCEL TRIP DATA: '+ data.trip_id)
       
@@ -85,11 +96,8 @@ class TripDetails extends Component {
             }
             }).then(res => res.json())
             .then(response => {
-              console.log(response.message);
-              console.log(response.trip_details.id)
-               this.props.navigation.navigate('Landing');
-                if(response.status == true){
-
+                if(response.status === true){
+                  this.ShowHideActivityIndicator();
                   ToastAndroid.show
                   ('Trip Request has been cancelled successfully', ToastAndroid.SHORT);
                   this.props.navigation.navigate('WelcomePage');
@@ -103,14 +111,16 @@ class TripDetails extends Component {
             }
 
             static navigationOptions = {
-                title: 'Trip Details',
-                header: null,
-              };
-             // static navigationOptions = { header: null, };
+              title: 'Trip Details',
+              header: null,
+            };
     
     render() {
         return (
             <View style={styles.MainContainer}>
+        {  
+          this.state.isLoading ?  <ActivityIndicator style={styles.ActivityIndicatorStyle} /> : null
+        }
               <View style={styles.Title}>
               <Text style={styles.TitleText}>Trip Details</Text>
               </View>
@@ -146,10 +156,12 @@ class TripDetails extends Component {
                     </View>
                     : null
                 }
-                    <View style= {styles.bottom}>
-                        <Image source={require('../img/log.png')}  style={styles.backgroundImage} />
-                    </View>
-                
+
+                {  
+                  this.state.isLoading ?  
+                  <ActivityIndicator style={styles.ActivityIndicatorStyle} /> 
+                  : null
+                }
             </View>
         );
     }
@@ -247,6 +259,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         fontSize: 16,
+      },
+
+      ActivityIndicatorStyle:{
+        paddingTop:20
       },
 });
 

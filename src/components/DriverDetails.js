@@ -10,6 +10,7 @@ import {Platform,
     PermissionsAndroid,
     Linking,
     Alert,
+    ActivityIndicator
     } from 'react-native';
 
   import Contacts from 'react-native-contacts';
@@ -32,12 +33,24 @@ export default class DriverDetails extends Component {
     car_model: '',
     colour: '',
     seats: '',
-    user_Id: null,
+    user_Id: '',
     tripId: '',
     pickup:'',
     destination:'',
     date:'',
     time:'',
+    isLoading: false
+      }
+    }
+
+    ShowHideActivityIndicator = () =>{
+      if(this.state.isLoading == true)
+      {
+        this.setState({isLoading: false})
+      }
+      else
+      {
+        this.setState({isLoading: true})
       }
     }
 
@@ -90,11 +103,15 @@ export default class DriverDetails extends Component {
     async componentDidMount() {
     //  BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
 
-        const { navigation } = this.props;
-           const userId = navigation.getParam('UserId', 'NO-ID');
+          const { navigation } = this.props;
+           const userId = navigation.getParam('userId', 'NO-ID');
+
            this.setState({ 
             user_Id: userId, 
           });
+
+          console.log('Passed ID: ' + this.state.user_Id);
+          this.ShowHideActivityIndicator();
   
       try {
           
@@ -105,7 +122,9 @@ export default class DriverDetails extends Component {
   
                   if(response.request_details.status == 2){
                     console.log('ACTIVE TRIP DETAILS STATUS: ' + response.request_details.status);
-
+                    
+                    this.ShowHideActivityIndicator();
+                    
                     let fullname = response.driver.firstname;
                     let phone_number = response.driver.phone;
                     let plate_number = response.vehicle.plate_number;
@@ -193,7 +212,7 @@ export default class DriverDetails extends Component {
 render() {
   return (
       <View style={styles.MainContainer}>
-      
+         
               <View style={styles.Top}>
                       <View style={styles.Icon}>
                       <Image
@@ -244,8 +263,11 @@ render() {
                           </TouchableOpacity>
                       </View>
               </View>
-              
-             
+              {  
+                  this.state.isLoading ?  
+                  <ActivityIndicator style={styles.ActivityIndicatorStyle} /> 
+                  : null
+                }
           
       </View>
   );
@@ -393,6 +415,11 @@ TripRequestButtonText: {
   fontWeight: 'bold',
   textAlign: 'center',
   fontSize: 18,
+},
+
+ActivityIndicatorStyle:{
+    paddingTop:5,
+    paddingBottom:5
 },
 });
 

@@ -89,6 +89,13 @@ export default class WelcomePage extends Component{
     //  BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     }
 
+    // componentWillMount(){
+    //   BackHandler.addEventListener('hardwareBackPress', function() {
+        
+    //     return true;
+    //   });
+    //  }
+
 
     static navigationOptions = { header: null, };
 
@@ -106,20 +113,20 @@ export default class WelcomePage extends Component{
                         <Text style={styles.Greeting}>Where would you like to go today?</Text>
                         
                         
-                        <View style={styles.Botton}>
+                        <View style={styles.BottonWrapper}>
                         <TouchableOpacity onPress={()=> this.props.navigation.navigate('PostTrip', 
-                            {UserId: this.state.user_Id})}>
+                            {UserId: this.state.user_Id})} style={styles.Botton}>
                             <View style={styles.Post}>
                                 <Text style={styles.PostText}>Post a Trip</Text>
                             </View>
-                        </TouchableOpacity>
+                        
                             <View style={styles.Icon}>
                                 <Image
                                     source={require('../img/post_arrow.png')}
                                     resizeMode = 'cover'
-                                    
                                 />
                             </View>
+                            </TouchableOpacity>
                         </View>
                     </View>
                     
@@ -185,17 +192,24 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         },
 
+        BottonWrapper: {
+          flex: 1, 
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        },
+
         Botton: {
         flex: 1, 
         flexDirection: 'row',
+        justifyContent: 'space-between',
         backgroundColor: '#232a46',
-        height:10,
         marginLeft:20,
         marginRight:20,
         marginTop:15,
         marginBottom:20,
         borderRadius: 10,
         paddingTop:17,
+        height:65
         },
 
         Post:{

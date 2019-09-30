@@ -29,10 +29,21 @@
       phone:'',
       password: '',
       errors: [],
-      showProgress: false,
+      isLoading: false
         }
       }
 
+
+      ShowHideActivityIndicator = () =>{
+        if(this.state.isLoading == true)
+        {
+          this.setState({isLoading: false})
+        }
+        else
+        {
+          this.setState({isLoading: true})
+        }
+      }
 
       componentDidMount () {
         console.log('Sign up mounted');
@@ -58,13 +69,13 @@
         }
       }
 
-      setIsLoggedIn = async () => {
-        try {
-            await AsyncStorage.setItem('isLoggedIn', '1' );
-            console.log('setIsLoggedIn stored successfull');
-        } catch (e) {
-        }
-      }
+      // setIsLoggedIn = async () => {
+      //   try {
+      //       await AsyncStorage.setItem('isLoggedIn', '1' );
+      //       console.log('setIsLoggedIn stored successfull');
+      //   } catch (e) {
+      //   }
+      // }
 
       async register (){
       let data = {};
@@ -75,6 +86,8 @@
         data.role = 1,
         data.email = '',
         console.log(data);
+
+        this.ShowHideActivityIndicator();
 
       var url = 'http://104.248.254.71/app/public/api/register';
 
@@ -96,10 +109,11 @@
 
            this.storeUserDetails(firstname, phone, email);
            this.storeUserId(user_id);
-           this.setIsLoggedIn();
-
+           //this.setIsLoggedIn();
+           this.ShowHideActivityIndicator();
            this.props.navigation.navigate('Authentication', {phone_no: phone});
            console.log('User Phone: '+ phone);
+           console.log('User ID: '+ user_id);
  
           } else {
               console.log(response.status);
@@ -115,6 +129,7 @@
       render() {
         return (
           <View style={styles.container}>
+        
             <View style={styles.top}>
               <Text style={styles.headerText}>WELCOME</Text>
               <Text style={styles.secondHeaderText}>Please create an account to continue</Text>
@@ -165,7 +180,11 @@
           </View>
             </View>
             <View style= {styles.bottom}>
-                <Image source={require('../img/log.png')}  style={styles.backgroundImage} />
+                  {
+                    this.state.isLoading ?  
+                    <ActivityIndicator style={styles.ActivityIndicatorStyle} /> 
+                    : null
+                  }
             </View>
           </View>
         );
@@ -255,5 +274,8 @@
         fontWeight: '800',
         color: 'white',
         textAlign: 'center'
+      },
+      ActivityIndicatorStyle:{
+        paddingTop:60
       },
     });

@@ -7,22 +7,63 @@ import {Platform,
   View, 
   ImageBackground, 
   Image, 
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
+import AsyncStorage from '@react-native-community/async-storage';
+
+import { Icon } from 'react-native-elements';
 
 
 export default class UploadIdVerification extends Component{
 
   state ={
-    avatar : '',
-    upload_file : {}
+    avatar : null,
+    upload_file : {},
+    userId:'',
+    isLoading: false,
 }
+
+ShowHideActivityIndicator = () =>{
+  if(this.state.isLoading == true)
+  {
+    this.setState({isLoading: false})
+  }
+  else
+  {
+    this.setState({isLoading: true})
+  }
+}
+
+// getDetails = async () => {
+//   try {
+//     const userId = await AsyncStorage.getItem('user_id');
+//     console.log('UploadIdVerification.js User ID:' + userId);
+//     this.setState({ 
+//       userId: userId,
+//     });
+
+//   } catch (e) {
+//    // this.props.navigation.navigate('Auth');
+//   }
+// }
+
+
+
+  componentDidMount(){
+    const { navigation } = this.props;
+            const user_Id = navigation.getParam('userId', 'NO-ID');
+            this.setState({ 
+              userId: user_Id, 
+           });
+    // this.getDetails();
+    }
 
   addAvatar = () => {
     ImagePicker.showImagePicker({}, response=>{
       if (response.didCancel) {
-       console.warn('Dont Do That')
+       console.warn('Action Cancelled')
      }else if (response.error) {
        console.warn(response.error)
       }
@@ -36,11 +77,19 @@ export default class UploadIdVerification extends Component{
     })
   }
 
-  _handlePress = () => {
+  setIsIdCardVerified = async () => {
+    try {
+        await AsyncStorage.setItem('idCardVerified', '1' );
+        console.log('ID Card verified successfull');
+    } catch (e) {
+    }
+  }
 
+  _handlePress = () => {
+    this.ShowHideActivityIndicator();
 const body = new FormData();
 
-body.append('user_id',1);
+body.append('user_id', this.state.userId);
 body.append('document_title','id_card');
 body.append('upload_file',{
   uri:this.state.avatar,
@@ -62,58 +111,77 @@ body: body, // data can be `string` or {object}!
 
   console.log(response);
 
-  this.props.navigation.navigate('UploadSelfieVerification');
-
   if(response.status == true){
-
+    this.ShowHideActivityIndicator();
+    this.setIsIdCardVerified();
+     this.props.navigation.navigate('UploadSelfieVerification', {userId: this.state.user_id});
      console.log(response.message);
      console.log(response.status)
-    // this.props.navigation.navigate('InterDetails');
   }else{
+    this.ShowHideActivityIndicator();
     console.log(response.status);
       console.log(response);
   }
 })
 .catch(error => console.error('Error', error));
+this.ShowHideActivityIndicator();
 }
 
 
    static navigationOptions = { header: null, };
   render(){
     return (
-      <ImageBackground source={require('../img/map.jpg')} style={styles.container}>
+      <ImageBackground source={require('../img/new_map.png')} style={styles.container}>
       <View style={styles.menuItems}>
-            <Image
-             source={require('../img/menu.png')}
-            style={styles.menu}
-            />
-            <Image
-             source={require('../img/bell.png')}
-            style={styles.bell}
-            />
+
+            
         </View>
         <View style= {styles.center}>
             <View style={styles.SquareShapeView}>
 
+            
+
               <TouchableOpacity onPress={()=> this.addAvatar()}>
                 <Image
-                // source={require('../img/messi.jpeg')}
                 source={{uri:this.state.avatar}}
                 style={styles.boy}
                 />
                 </TouchableOpacity>
 
-                <Text style={styles.accountText}>Please tap the button below to verify your account with an ID</Text>
+                {
+                  this.state.avatar !== null 
+                  ?
+                  <Text style={styles.accountText}>Please click on the button below to Upload 
+                  your Identity Card Image</Text>
+                  :
+                  <Text style={styles.accountText}>Please tap on the Icon below to add 
+                  an Identity Card Image</Text>
+                }
 
-                <TouchableOpacity style ={styles.button} onPress={() => this._handlePress()}>
-                  <Text style= {styles.buttonText}> Upload ID </Text>
+                {
+                  this.state.avatar !== null 
+                  ? 
+                  <TouchableOpacity style ={styles.button2} 
+                  onPress={() => this._handlePress()}>
+                    <Icon name='cloud-upload' size={65} color="#232a46" />
+                    <Text style= {styles.smallText}> Upload photo </Text>
+                  </TouchableOpacity>
+                  :
+                  <TouchableOpacity style ={styles.button2} 
+                    onPress={() => this.addAvatar()}>
+                  <Icon name='add-a-photo' size={65} color="#232a46" />
+                  <Text style={styles.smallText}>Add a photo</Text>
                 </TouchableOpacity>
-
+                
+                }
             </View>
           </View>
 
           <View style= {styles.bottom}>
-
+          {
+          // Here the ? Question Mark represent the ternary operator.   
+        this.state.isLoading ?  <ActivityIndicator style={styles.ActivityIndicatorStyle} /> : null
+      }
               </View>
 
 
@@ -134,6 +202,11 @@ const styles = StyleSheet.create({
      marginBottom: 90,
      flexDirection: 'row',
    },
+
+   ActivityIndicatorStyle:{
+    paddingTop:50
+  },
+
    menu : {
      height: 20,
      marginRight: 300,
@@ -173,22 +246,29 @@ const styles = StyleSheet.create({
   },
   SquareShapeView: {
     width: 300,
-    height: 350,
+    height: 400,
     backgroundColor: '#fcfcfc',
     borderRadius: 10,
   },
   boy:{
-    width: 120,
+    width: 180,
     height: 100,
     marginTop: 40,
-    marginLeft: 80
+    marginLeft: 60,
   },
   accountText: {
      fontSize: 20,
      marginRight: 30,
-     marginLeft: 55,
-     marginTop: 20,
+     marginLeft: 30,
+     marginTop: 10,
+     textAlign: 'center'
   },
+
+  smallText:{
+    fontSize: 10,
+    textAlign: 'center'
+  },
+
   button: {
     width: 120,
     borderRadius: 25,
@@ -197,6 +277,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginLeft: 90
   },
+
+  button2: {
+    marginTop: 40,
+  },
+
   buttonText: {
     fontSize: 16,
     fontWeight: '800',

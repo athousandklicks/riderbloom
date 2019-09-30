@@ -9,6 +9,7 @@ import {Platform,
   TouchableOpacity} from 'react-native';
 
   import AsyncStorage from '@react-native-community/async-storage';
+  import { Icon } from 'react-native-elements';
 
 
 export default class Profile extends Component {
@@ -64,13 +65,13 @@ export default class Profile extends Component {
 
 
   static navigationOptions = {
-    drawerLabel: 'Profile',
-    drawerIcon: ({ tintColor }) => (
-      <Image
-        source={require('./compass.png')}
-        style={[styles.icon, { tintColor: tintColor }]}
-      />
-    ),
+    drawerLabel: 'Profile 1',
+    // drawerIcon: ({ tintColor }) => (
+    //   <Image
+    //     source={require('./compass.png')}
+    //     style={[styles.icon, { tintColor: tintColor }]}
+    //   />
+    // ),
   };
 
 static navigationOptions = {
@@ -84,10 +85,7 @@ render() {
       <View style={styles.MainContainer}>
           <View style={styles.Body}>
                   <View style={styles.Top}>
-                      <Image
-                          source={require('../img/avatar.png')}
-                          style={styles.CircleShapeView}
-                      />
+                  <Icon name='account-circle' size={110} color="#808080" />
                   </View>
 
                   <View style={styles.Centre}>

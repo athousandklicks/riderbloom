@@ -8,14 +8,14 @@ import {
   Image, 
   TouchableOpacity, 
   TextInput,
+  ActivityIndicator,
+  ToastAndroid,
+  Alert
   } from 'react-native';
 
   import AsyncStorage from '@react-native-community/async-storage';
   import axios from 'axios';
 
-import { connect } from 'react-redux';
-import { loginUser} from '../store/actions';
-import { bindActionCreators } from 'redux';
 
 const FIRST_NAME = 'first_name';
 const PHONE_NUMBER = 'phone_number';
@@ -36,16 +36,59 @@ export default class RiderLogin extends Component{
      this.state = {
      phone: '',
      password: '',
+     loading: true,
+     isLoading: false,
+      otp: '',
+      idCard: '',
+      selfie:'',
+      user_id:null,
        }
      }
 
 
+     ShowHideActivityIndicator = () =>{
+      if(this.state.isLoading == true)
+      {
+        this.setState({isLoading: false})
+      }
+      else
+      {
+        this.setState({isLoading: true})
+      }
+    }
+
+
+    componentDidMount = async () => {
+        try {
+          const _otp = await AsyncStorage.getItem('otpVerified');
+          const _idCard = await AsyncStorage.getItem('idCardVerified');
+          const _selfie = await AsyncStorage.getItem('selfieVerified');
+
+          this.setState({ 
+            otp: _otp,
+            idCard: _idCard,
+            selfie: _selfie,
+            server_otp:''
+          });
+  
+        } catch (e) {
+          this.props.navigation.navigate('Auth');
+        }
+      }
+     
+
+    //  componentDidMount(){
+    //   this.setState({
+    //     loading: true
+    //   });
+    //  }
+
      getDetails = async () => {
       try {
         const userId = await AsyncStorage.getItem('user_id');
-        if(userId != null){
-
-        }
+        this.setState({ 
+          user_id: userId,
+        });
       } catch (e) {
         this.props.navigation.navigate('Auth');
       }
@@ -56,6 +99,7 @@ export default class RiderLogin extends Component{
         await AsyncStorage.setItem(FIRST_NAME, first_name);
         await AsyncStorage.setItem(PHONE_NUMBER, phone_number);
         await AsyncStorage.setItem(EMAIL, email);
+        
           console.log('Login Phone number stored successfull');
       } catch (error) {
           console.log('Something went wrong with phone No');
@@ -71,22 +115,66 @@ export default class RiderLogin extends Component{
       }
     }
 
+    verifyIfSignupIsComplete(id, phone) {
+
+        if(id !== null){ //Means user record exists
+
+        if(!this.state.otp && !this.state.idCard && !this.state.selfie){
+          ToastAndroid.show
+          ('Registration Incomplete! Pls, request a new OTP to continue', ToastAndroid.SHORT);
+          this.props.navigation.navigate('Authentication' , {phone_no: phone});
+
+        }else if(this.state.otp  && !this.state.idCard && !this.state.selfie){
+          ToastAndroid.show
+          ('Registration Incomplete! Pls, upload ID card to continue', ToastAndroid.SHORT);
+          this.props.navigation.navigate('UploadIdVerification', {userId: id});
+
+        }else if(this.state.otp && this.state.idCard && !this.state.selfie){
+          ToastAndroid.show
+          ('Registration Incomplete! Pls, upload a Selfie to continue', ToastAndroid.SHORT);
+          this.props.navigation.navigate('UploadSelfieVerification', {userId: id});
+        }else{
+          ToastAndroid.show
+          ('Login Details Incorrect! You can try again, Register or Recover your password', ToastAndroid.SHORT);
+        } 
+      }   //end id check
+      }
+
+
+
+    // setIsLoggedIn = async () => {
+    //     try {
+    //       if(this.state.otp && this.state.idCard && this.state.selfie){
+    //         await AsyncStorage.setItem('isLoggedIn', '1' );
+    //         console.log('setIsLoggedIn stored successfull');
+    //       }else{
+    //       //  this.verifyIfSignupIsComplete(this.state.user_id, this.state.phone);
+    //       }
+    //     } catch (e) {
+    //     }
+    //   }
+
+
     setIsLoggedIn = async () => {
       try {
+ 
           await AsyncStorage.setItem('isLoggedIn', '1' );
           console.log('setIsLoggedIn stored successfull');
+        
       } catch (e) {
       }
-    }
+    } 
 
-  async login(){
+    async login(){
 
     let data = {};
      data.username = this.state.phone,
      data.password = this.state.password,
      data.role = 1,
      console.log(data);
-    
+
+     this.ShowHideActivityIndicator();
+
     //var url = 'https://example.com/profile';
     var url = 'http://104.248.254.71/app/public/api/login';
     
@@ -105,21 +193,52 @@ export default class RiderLogin extends Component{
            let email = response.email;
            let user_id = response.user_id;
 
+           this.setState({ 
+            user_id: user_id,
+            phone: phone
+          });
+
            console.log('PHONE: '+ phone);
            console.log('USER ID: '+ user_id);
 
            this.storeUserDetails(firstname, phone, email);
            this.storeUserId(user_id);
            this.setIsLoggedIn();
+
+           this.ShowHideActivityIndicator();
            
            this.props.navigation.navigate('Splash');
         } else {
-            console.log(response.status);
-            
+         // this.verifyIfSignupIsComplete(this.state.user_id, this .state.phone);
+          console.log(response.status); 
+          this.ShowHideActivityIndicator();
         }
     })
     .catch(error => console.error('Error', error));
+    this.ShowHideActivityIndicator();
     }
+
+    forgotPasswordOtpAlert(){
+      Alert.alert(
+        'Exit',
+        'Do You want to reset your password?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {text: 'OK', onPress: () => this.requestOtp()},
+        ],
+        {cancelable: false},
+      );
+  
+      }
+
+      requestOtp(){
+        let  phone = this.state.phone;
+        this.props.navigation.navigate('ForgotPassword', {phone_no: phone})
+      }
 
 
 
@@ -128,6 +247,8 @@ static navigationOptions = { header: null, };
   render() {
     return (
   <View style={styles.container}>
+
+  
 
       <View style={styles.top}>
              <Text style={styles.headerText}>WELCOME BACK</Text>
@@ -153,8 +274,9 @@ static navigationOptions = { header: null, };
          value = {this.state.password}
          ref={(input) => this.password = input}
          />
-
+    <TouchableOpacity onPress={()=> this.forgotPasswordOtpAlert()}>
           <Text style= {styles.forgotPassword}>Forgot Password?</Text>
+          </TouchableOpacity>
       </View>
 
            <TouchableOpacity 
@@ -172,8 +294,12 @@ static navigationOptions = { header: null, };
       </View>
 
       <View style= {styles.bottom}>
-           <Image source={require('../img/log.png')}  style={styles.backgroundImage} />
-      </View>
+          {  
+            this.state.isLoading ?  
+            <ActivityIndicator style={styles.ActivityIndicatorStyle} /> 
+            : null
+          }
+       </View>
   </View>
     );
   }
@@ -184,6 +310,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor:'white'
   },
+
+  ActivityIndicatorStyle:{
+    paddingTop:10
+  },
+
   form : {
     flexGrow: 1,
    borderRadius: 15,

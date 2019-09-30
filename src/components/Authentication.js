@@ -6,7 +6,7 @@ import {Platform,
     View, 
     TouchableOpacity, 
     Image, 
-    ImageBackground, 
+    ActivityIndicator, 
     TextInput} from 'react-native';
     import AsyncStorage from '@react-native-community/async-storage';
 
@@ -20,17 +20,56 @@ export default class Authentication extends Component {
               entered_otp: null,
               server_otp: null,
               otp_error: null,
+              user_id:'',
+              isLoading: false,
           };
   }
 
+  ShowHideActivityIndicator = () =>{
+    if(this.state.isLoading == true)
+    {
+      this.setState({isLoading: false})
+    }
+    else
+    {
+      this.setState({isLoading: true})
+    }
+  }
+
+  getDetails = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('user_id');
+      console.log('Authentication.js User ID:' + userId);
+      this.setState({ 
+        user_Id: userId,
+      });
+
+    } catch (e) {
+     // this.props.navigation.navigate('Auth');
+    }
+  }
+
+  setIsOTPVerified = async () => {
+    try {
+        await AsyncStorage.setItem('otpVerified', '1' );
+        console.log('OTP verified successfull');
+    } catch (e) {
+    }
+  }
+
+
       componentDidMount () {
+        this.getDetails();
         this.requestOtp();
       }
 
       requestOtp(){
         const { navigation } = this.props;
        const phoneNumber = navigation.getParam('phone_no', 'NO-PHONE NUMBER');
+       this.ShowHideActivityIndicator();
        let url_phone_no = phoneNumber;
+       
+
        console.log('phoneNumber: '+ phoneNumber);
         return fetch(`http://104.248.254.71/app/public/api/verify-phone?phone=${url_phone_no}`)
         .then ((res) => res.json())
@@ -41,11 +80,14 @@ export default class Authentication extends Component {
                 this.setState({
                   server_otp: response.otp,
                 });
+                this.ShowHideActivityIndicator();
             }else{
                 console.log(response.status);
+                this.ShowHideActivityIndicator();
             }
         }).catch((error) => {
           console.log(error);
+          this.ShowHideActivityIndicator();
         })
       }
 
@@ -53,7 +95,8 @@ export default class Authentication extends Component {
         console.log('Server OTP:' + serverOtp);
         console.log('phone OTP:' + phoneOtp);
         if(serverOtp == phoneOtp){
-          this.props.navigation.navigate('UploadIdVerification', {otp: serverOtp});
+          this.setIsOTPVerified();
+          this.props.navigation.navigate('UploadIdVerification', {userId: this.state.user_id});
         }else{
           this.updateOtpError();
         } 
@@ -99,7 +142,11 @@ export default class Authentication extends Component {
 
                             <View style= {styles.bottom}>
                                 <Image source={require('../img/log.png')}  style={styles.backgroundImage} />
-                            </View>                       
+                            </View>     
+                            {
+          // Here the ? Question Mark represent the ternary operator.   
+        this.state.isLoading ?  <ActivityIndicator style={styles.ActivityIndicatorStyle} /> : null
+      }                  
                     </View>
 
         );
@@ -120,6 +167,11 @@ const styles = StyleSheet.create({
     marginTop:40,
     flex: 3,
   },
+
+  ActivityIndicatorStyle:{
+    paddingTop:50
+  },
+
 
   bottom: {
     flex: 1,

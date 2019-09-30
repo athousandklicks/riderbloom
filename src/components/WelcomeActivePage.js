@@ -8,6 +8,7 @@ import {
     ImageBackground,
     Image,
     TouchableOpacity,
+    BackHandler
 } from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -20,7 +21,7 @@ export default class WelcomeActivePage extends Component {
     
         this.state = {
         name: '',
-        user_Id: null,
+        user_Id: '',
         trip_id: '',
           }
         }
@@ -37,13 +38,31 @@ export default class WelcomeActivePage extends Component {
           }
         }
 
+
+        // componentWillMount(){
+        //     BackHandler.addEventListener('hardwareBackPress', function() {
+        //       return true;
+        //     });
+        //    }
+
         async componentDidMount () {
 
-            this.getUserDetails();
+          //  this.getUserDetails();
+
+            const userId = await AsyncStorage.getItem('user_id');
+            console.log('USER ID FROM ASYNC: ' + userId);
+
+            let new_user_id = userId;
+
+            this.setState({ 
+                user_Id: new_user_id, 
+              });
       
+              console.log('Passed ID: ' + this.state.user_Id);
+
             try {             
-                // return fetch(`http://104.248.254.71/app/public/api/get-active-trip?user_id=${userId}`)
-                return fetch(`http://104.248.254.71/app/public/api/get-active-trip?user_id=1`)
+                 return fetch(`http://104.248.254.71/app/public/api/get-active-trip?user_id=${userId}`)
+                //return fetch(`http://104.248.254.71/app/public/api/get-active-trip?user_id=1`)
                .then ((res) => res.json())
                .then(response => {
                    if(response.status == true){
@@ -70,6 +89,8 @@ export default class WelcomeActivePage extends Component {
                               seats: No_of_seats, 
                               tripId: trip_id
                             });
+
+                            console.log('State Name' + this.state.name);
                         }
         
                    }
@@ -112,20 +133,20 @@ export default class WelcomeActivePage extends Component {
                     </View>
                         <Text style={styles.StatusText}>Status:     <Text style={styles.RedText}>On a Trip</Text></Text>
                         
-                        <View style={styles.Botton}>
+                        <View style={styles.BottonWrapper}>
                         <TouchableOpacity onPress={()=> this.props.navigation.navigate('DriverDetails', 
-                            {userId: 1})}>
+                            {userId: this.state.user_Id})} style={styles.Botton}>
                             <View style={styles.Post}>
                                 <Text style={styles.PostText}>Trip Details</Text>
                             </View>
-                            </TouchableOpacity>
+                            
                             <View style={styles.Icon}>
                                 <Image
                                     source={require('../img/post_arrow.png')}
                                     resizeMode = 'cover'
-                                    
                                 />
                             </View>
+                            </TouchableOpacity>
                         </View>
                     </View>
                     
@@ -223,6 +244,12 @@ const styles = StyleSheet.create({
         paddingBottom: 5
         },
 
+        BottonWrapper: {
+            flex: 1, 
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          },
+
         Botton: {
         flex: 1, 
         flexDirection: 'row',
@@ -234,6 +261,7 @@ const styles = StyleSheet.create({
         marginBottom:20,
         borderRadius: 10,
         paddingTop:17,
+        height:65
         },
 
         Post:{

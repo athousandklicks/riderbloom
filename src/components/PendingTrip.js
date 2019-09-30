@@ -7,7 +7,8 @@ import {
     View,
     ImageBackground,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    BackHandler
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -56,6 +57,12 @@ class PendingTrip extends Component {
           this.getUserDetails();
         //  BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
         }
+
+        // componentWillMount(){
+        //     BackHandler.addEventListener('hardwareBackPress', function() {
+        //       return true;
+        //     });
+        //    }
     
     
         static navigationOptions = { header: null, };
@@ -75,20 +82,20 @@ class PendingTrip extends Component {
                         <Text style={styles.Greeting}>You have a Pending Trip yet to be Accepted</Text>
                         <Text style={styles.StatusText}>Status:    <Text style={styles.RedText}>pending...</Text></Text>
                         
-                        <View style={styles.Botton}>
+                        <View style={styles.BottonWrapper}>
                             <TouchableOpacity onPress={()=> this.props.navigation.navigate('TripDetails', 
-                            {tripId: this.state.trip_id})}>
+                            {tripId: this.state.trip_id})} style={styles.Botton}>
                             <View style={styles.Post}>
                                 <Text style={styles.PostText}>Trip Details</Text>
                             </View>
-                            </TouchableOpacity>
+                            
                             <View style={styles.Icon}>
                                 <Image
                                     source={require('../img/post_arrow.png')}
-                                    resizeMode = 'cover'
-                                    
+                                    resizeMode = 'cover'  
                                 />
                             </View>
+                            </TouchableOpacity>
                         </View>
                     </View>
                     
@@ -154,11 +161,17 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         },
 
+        BottonWrapper: {
+            flex: 1, 
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          },
+
         Botton: {
         flex: 1, 
         flexDirection: 'row',
         backgroundColor: '#232a46',
-        height:10,
+        height:65,
         marginLeft:20,
         marginRight:20,
         marginTop:15,
